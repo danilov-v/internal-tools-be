@@ -1,0 +1,42 @@
+version: '3'
+services:
+  database:
+    image: postgres:12-alpine
+    container_name: 'postgres'
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: pg_isready -d=postgresql://postgres:NotSoSecretPassword@localhost
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - './db_data:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_PASSWORD: NotSoSecretPassword
+      POSTGRES_DB: it_tools
+
+  create_database:
+    image: postgres:12-alpine
+    container_name: 'it_tools_database_creator'
+    restart: on-failure
+    command: psql -h postgres -U postgres -f /custom_scripts/CreateDatabase.sql
+    depends_on:
+      - database
+    environment:
+      PGPASSWORD: NotSoSecretPassword
+    volumes:
+      - .:/custom_scripts
+
+  migrations:
+    image: flyway/flyway:6.2.4-alpine
+    container_name: 'it-tools-migrations'
+    restart: on-failure
+    command: -url=jdbc:postgresql://postgres:5432/it_tools -user=postgres -password=NotSoSecretPassword migrate
+    depends_on:
+      - create_database
+    volumes:
+    - '.:/flyway/sql'
+
+
+    

@@ -1,0 +1,1 @@
+SELECT 'CREATE DATABASE it_tools' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'it_tools')\gexec
