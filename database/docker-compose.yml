@@ -5,15 +5,10 @@ services:
     container_name: 'postgres'
     ports:
       - '5432:5432'
-    healthcheck:
-      test: pg_isready -d=postgresql://postgres:NotSoSecretPassword@localhost
-      interval: 5s
-      timeout: 5s
-      retries: 3
     volumes:
       - './db_data:/var/lib/postgresql/data'
     environment:
-      POSTGRES_PASSWORD: NotSoSecretPassword
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: it_tools
 
   create_database:
@@ -24,19 +19,16 @@ services:
     depends_on:
       - database
     environment:
-      PGPASSWORD: NotSoSecretPassword
+      PGPASSWORD: postgres
     volumes:
-      - .:/custom_scripts
+      - ./scripts/:/custom_scripts
 
   migrations:
     image: flyway/flyway:6.2.4-alpine
     container_name: 'it-tools-migrations'
     restart: on-failure
-    command: -url=jdbc:postgresql://postgres:5432/it_tools -user=postgres -password=NotSoSecretPassword migrate
+    command: -url=jdbc:postgresql://postgres:5432/it_tools -user=postgres -password=postgres migrate
     depends_on:
       - create_database
     volumes:
-    - '.:/flyway/sql'
-
-
-    
+    - './scripts/:/flyway/sql'
