@@ -1,1 +1,11 @@
+# project files
+node_modules
+
+# IDEs
+.idea/
+.vscode/
+
+# build
+build
+
 database/db_data
