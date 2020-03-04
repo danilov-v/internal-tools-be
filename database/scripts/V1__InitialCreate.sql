@@ -4,7 +4,7 @@ create schema it_tools;
 
 create table it_tools.role (
     id   serial primary key,
-    name varchar(1044) unique not null
+    name varchar(255) unique not null
 );
 
 create table it_tools.promotion_type (
@@ -43,10 +43,10 @@ create table it_tools.person_type (
 create table it_tools.user (
     id          serial primary key,
     login       varchar(20) unique not null,
-    password    varchar(20)        not null,
-    first_name  varchar(20)        not null,
-    second_name varchar(20),
-    last_name   varchar(20),
+    password    varchar(255)        not null,
+    first_name  varchar(255)        not null,
+    second_name varchar(255),
+    last_name   varchar(255),
     rank_id     integer references it_tools.rank (id),
     role_id     integer references it_tools.role (id)
 );
@@ -60,11 +60,11 @@ create table it_tools.unit (
 
 create table it_tools.person (
     id                  serial primary key,
-    first_name          varchar(25) not null,
-    second_name         varchar(25),
-    last_name           varchar(25) not null,
+    first_name          varchar(255) not null,
+    second_name         varchar(255),
+    last_name           varchar(255) not null,
     birth_date          date,
-    phone               varchar(25),
+    phone               varchar(20),
     position            varchar(255),
     person_type_id      integer references it_tools.person_type (id),
     call_date           date,
@@ -80,14 +80,14 @@ create table it_tools.person_removal (
     person_id         integer references it_tools.person (id),
     removal_reason_id integer references it_tools.removal_reason (id),
     removal_date      date not null,
-    comment           varchar(255)
+    comment           text
 );
 
 create table it_tools.promotion (
     id               serial primary key,
     assignment_date  date not null,
     realization_date date,
-    comment          varchar(255),
+    comment          text,
     person_id        integer references it_tools.person (id),
     type_id          integer references it_tools.promotion_type (id)
 );
@@ -96,7 +96,7 @@ create table it_tools.penalty (
     id               serial primary key,
     assignment_date  date not null,
     realization_date date,
-    comment          varchar(255),
+    comment          text,
     person_id        integer references it_tools.person (id),
     type_id          integer references it_tools.penalty_type (id)
 );
