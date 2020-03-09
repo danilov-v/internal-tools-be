@@ -1,5 +1,6 @@
 # project files
 node_modules
+it-tools.logs*.log
 
 # IDEs
 .idea/
