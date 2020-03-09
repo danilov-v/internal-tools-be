@@ -15,6 +15,8 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
     ],
     rules: {
+        '@typescript-eslint/explicit-function-return-type': 'off',
+
         'semi': 'error',
         'no-extra-semi': 'warn',
         'eol-last': 'warn',
