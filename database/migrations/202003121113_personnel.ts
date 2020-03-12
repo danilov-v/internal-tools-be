@@ -8,8 +8,6 @@ export async function up(knex: Knex): Promise<any> {
         table.text('comment');
         table.integer('unit_id').notNullable().references('id').inTable('units');
         table.integer('user_id').notNullable().references('id').inTable('users');
-
-        table.index(['demobilization_at']);
     });
 }
 
