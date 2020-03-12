@@ -3,5 +3,7 @@
 
     "logFile": "it-tools.logs.log",
     "minLogLevel": "debug",
-    "maxLogFileSize": 4194304
+    "maxLogFileSize": 4194304,
+
+    "dbConnectionString": "postgres://postgres:postgres@localhost:5432/it_tools"
 }
