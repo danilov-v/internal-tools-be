@@ -9,6 +9,7 @@ services:
       - './db_data:/var/lib/postgresql/data'
     environment:
       POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
       POSTGRES_DB: it_tools
 
   create_database:
@@ -20,5 +21,6 @@ services:
       - database
     environment:
       PGPASSWORD: postgres
+      PGUSER: postgres
     volumes:
       - ./scripts/:/custom_scripts
