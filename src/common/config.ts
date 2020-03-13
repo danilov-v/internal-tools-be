@@ -1,14 +1,4 @@
-import * as convict from 'convict';
-
-interface Config {
-    readonly port: number;
-
-    readonly logFile: string;
-    readonly maxLogFileSize: number;
-    readonly minLogLevel: string;
-
-    readonly dbConnectionString: string;
-}
+import convict from 'convict';
 
 function environment(name: string) {
     return 'IT_TOOLS_' + name;
@@ -46,15 +36,35 @@ const configuration = convict({
         format: '*',
         default: 'postgres://postgres:postgres@localhost:5432/it_tools',
         env: environment('DB_CONNECTION_STRING')
+    },
+
+    cookieSecret: {
+        doc: 'Secret to be used by cookies',
+        format: '*',
+        default: 'not_so_secret_secret',
+        env: environment('COOKIE_SECRET')
     }
 }).loadFile('config.json');
+
+interface Config {
+    readonly port: number;
+
+    readonly logFile: string;
+    readonly maxLogFileSize: number;
+    readonly minLogLevel: string;
+
+    readonly dbConnectionString: string;
+
+    readonly cookieSecret: string;
+}
 
 const config: Config = {
     port: configuration.get('port'),
     logFile: configuration.get('logFile'),
     minLogLevel: configuration.get('minLogLevel'),
     maxLogFileSize: configuration.get('maxLogFileSize'),
-    dbConnectionString: configuration.get('dbConnectionString')
+    dbConnectionString: configuration.get('dbConnectionString'),
+    cookieSecret: configuration.get('cookieSecret')
 };
 
 export default config;
