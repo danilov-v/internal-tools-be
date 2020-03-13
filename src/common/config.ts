@@ -6,6 +6,8 @@ interface Config {
     readonly logFile: string;
     readonly maxLogFileSize: number;
     readonly minLogLevel: string;
+
+    readonly dbConnectionString: string;
 }
 
 function environment(name: string) {
@@ -37,6 +39,13 @@ const configuration = convict({
         format: 'int',
         default: 1024*1024*4,
         env: environment('LOG_FILE')
+    },
+
+    dbConnectionString: {
+        doc: 'Connection string to the database',
+        format: '*',
+        default: 'postgres://postgres:postgres@localhost:5432/it_tools',
+        env: environment('DB_CONNECTION_STRING')
     }
 }).loadFile('config.json');
 
@@ -44,7 +53,8 @@ const config: Config = {
     port: configuration.get('port'),
     logFile: configuration.get('logFile'),
     minLogLevel: configuration.get('minLogLevel'),
-    maxLogFileSize: configuration.get('maxLogFileSize')
+    maxLogFileSize: configuration.get('maxLogFileSize'),
+    dbConnectionString: configuration.get('dbConnectionString')
 };
 
 export default config;
