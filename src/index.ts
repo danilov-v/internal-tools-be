@@ -1,7 +1,7 @@
 import express from 'express';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
-import LocalStrategy from 'passport-local';
+import CustomStrategy from 'passport-custom';
 import morgan from 'morgan';
 import Knex from 'knex';
 import path from 'path';
@@ -15,20 +15,25 @@ import { compare } from 'bcrypt';
 import { authenticateRoutesExcept } from './express-middleware/auth';
 
 // Passport
-passport.use(new LocalStrategy.Strategy(async function(username, password, done) {
-    const auth = await Auth.getByUsername(username);
+passport.use(new CustomStrategy.Strategy(function (req, done) {
+    const login = req.body.login;
+    const password = req.body.password;
 
-    if (auth === null) {
-        return done(null, false, { message: 'User not found' });
-    }
+    Auth.getByLogin(login).then(function (auth) {
+        if (auth === null) {
+            return done(null, false);
+        }
 
-    const isPasswordValid = await compare(password, auth.password);
+        compare(password.toString(), auth.password).then(function (isPasswordValid) {
+            if (!isPasswordValid) {
+                return done(null, false);
+            }
 
-    if (!isPasswordValid) {
-        return done(null, false, { message: 'Invalid credentials' });
-    }
+            return done(null, { username: auth.login, role: auth.role.name });
+        });
+    });
 
-    return done(null, { username: auth.login, role: auth.role.name });
+
 }));
 
 passport.serializeUser(function (req, user, done) {

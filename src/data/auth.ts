@@ -10,7 +10,7 @@ class Auth extends BaseModel {
     role!: Role;
     user!: User;
 
-    static getByUsername(username: string): Promise<Auth | null> {
+    static getByLogin(username: string): Promise<Auth | null> {
         return Auth.query()
             .withGraphFetched('role')
             .where('login', username)

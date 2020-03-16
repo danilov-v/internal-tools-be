@@ -3,24 +3,26 @@ import passport from 'passport';
 const authRouter = express.Router();
 
 authRouter.post('/login', function (req, res, next) {
-    passport.authenticate('local', function (err, user, info) {
+    passport.authenticate('custom', function (err, user) {
         if (err) {
             return next(err);
         }
 
         if (!user) {
             res.status(401);
-            return res.json({ message: info.message });
+            return res.json({ message: 'Invalid credentials' });
         }
 
-        res.sendStatus(205);
+        req.login(user, function (err) {
+            if (err) {
+                return next(err);
+            }
+
+            res.status(205);
+            res.json({ message: 'Success' });
+        });
     })(req, res, next);
 });
-//
-// authRouter.post('/login', passport.authenticate('local', { failureFlash: true }),
-//     function (req, res) {
-//         res.sendStatus(205);
-//     });
 
 authRouter.post('/logout', function (req, res) {
     req.logOut();
