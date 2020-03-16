@@ -10,6 +10,23 @@ class Auth extends BaseModel {
     role!: Role;
     user!: User;
 
+    static getByUsername(username: string): Promise<Auth | null> {
+        return Auth.query()
+            .withGraphFetched('role')
+            .where('login', username)
+            .then(entities => {
+                if (entities.length > 1) {
+                    throw new Error('expected a single record');
+                }
+
+                if (entities.length === 0) {
+                    return null;
+                }
+
+                return entities[0];
+            });
+    }
+
     static relationMappings: RelationMappings = {
         role: {
             relation: Model.HasOneRelation,
@@ -27,7 +44,7 @@ class Auth extends BaseModel {
                 to: 'users.id'
             }
         }
-    }
+    };
 
     static tableName = 'auth';
 }

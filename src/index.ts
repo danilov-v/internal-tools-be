@@ -10,13 +10,25 @@ import config from './common/config';
 import logger from './common/logger';
 import bodyParser from 'body-parser';
 import authRouter from './routes/auth';
+import Auth from './data/auth';
+import { compare } from 'bcrypt';
+import { authenticateRoutesExcept } from './express-middleware/auth';
 
-passport.use(new LocalStrategy.Strategy(function(username, password, done) {
-    if (username === 'admin' && password === 'admin') {
-        return done(null, { username: username, role: 'admin' });
+// Passport
+passport.use(new LocalStrategy.Strategy(async function(username, password, done) {
+    const auth = await Auth.getByUsername(username);
+
+    if (auth === null) {
+        return done(null, false, { message: 'User not found' });
     }
 
-    return done(null, false, { message: 'Invalid credentials' });
+    const isPasswordValid = await compare(password, auth.password);
+
+    if (!isPasswordValid) {
+        return done(null, false, { message: 'Invalid credentials' });
+    }
+
+    return done(null, { username: auth.login, role: auth.role.name });
 }));
 
 passport.serializeUser(function (req, user, done) {
@@ -27,6 +39,19 @@ passport.serializeUser(function (req, user, done) {
 passport.deserializeUser(function (req, user, done) {
     done(null, user);
 });
+
+// Knex
+const knex = Knex({
+    client: 'pg',
+    connection: config.dbConnectionString,
+    migrations: {
+        directory: path.join(__dirname, '..', 'database/migrations')
+    },
+    seeds: {
+        directory: path.join(__dirname, '..', 'database/seeds')
+    }
+});
+Model.knex(knex);
 
 const app = express();
 app.use(
@@ -42,26 +67,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieSession({
     httpOnly: true,
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
     name: 'session',
-    secret: config.cookieSecret
+    secret: config.cookieSecret,
+    signed: true
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(authenticateRoutesExcept([ '/login' ]));
 
-const knex = Knex({
-    client: 'pg',
-    connection: config.dbConnectionString,
-    migrations: {
-        directory: path.join(__dirname, '..', 'database/migrations')
-    },
-    seeds: {
-        directory: path.join(__dirname, '..', 'database/seeds')
-    }
-});
-Model.knex(knex);
-
-app.get('/', passport.authenticate('local', { session: true }), function (req, res) {
+app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 
