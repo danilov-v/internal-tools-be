@@ -10,11 +10,11 @@ class Auth extends BaseModel {
     role!: Role;
     user!: User;
 
-    static getByLogin(username: string): Promise<Auth | null> {
+    static getByLogin(login: string): Promise<Auth | null> {
         return Auth.query()
             .withGraphFetched('role')
             .withGraphFetched('user')
-            .where('login', username)
+            .where('login', login)
             .then(entities => {
                 if (entities.length > 1) {
                     throw new Error('expected a single record');

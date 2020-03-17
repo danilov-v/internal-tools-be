@@ -11,36 +11,27 @@ import config from './common/config';
 import logger from './common/logger';
 import bodyParser from 'body-parser';
 import authRouter from './routes/auth';
-import Auth from './data/auth';
-import { compare } from 'bcrypt';
 import { authenticateRoutesExcept } from './express-middleware/auth';
+import authService from './business/auth.service';
 
 // Passport
-passport.use(new CustomStrategy.Strategy(function (req, done) {
-    const login = req.body.login;
-    const password = req.body.password;
+passport.use(new CustomStrategy.Strategy(async function (req, done) {
+    const login = req.body.login.toString();
+    const password = req.body.password.toString();
 
-    Auth.getByLogin(login).then(function (auth) {
-        if (auth === null) {
-            return done(null, false);
-        }
+    const authInfo = await authService.getByCredentials(login, password);
 
-        compare(password.toString(), auth.password).then(function (isPasswordValid) {
-            if (!isPasswordValid) {
-                return done(null, false);
-            }
+    if (authInfo === null) {
+        return done(null, false);
+    }
 
-            return done(null, {
-                login: auth.login,
-                role: auth.role.name,
-                firstName: auth.user.firstName,
-                lastName: auth.user.lastName,
-                middleName: auth.user.middleName
-            });
-        });
+    return done(null, {
+        login: authInfo.login,
+        role: authInfo.role,
+        firstName: authInfo.firstName,
+        lastName: authInfo.lastName,
+        middleName: authInfo.middleName
     });
-
-
 }));
 
 passport.serializeUser(function (req, user, done) {
