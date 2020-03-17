@@ -43,6 +43,13 @@ const configuration = convict({
         format: '*',
         default: 'not_so_secret_secret',
         env: environment('COOKIE_SECRET')
+    },
+
+    corsOrigin: {
+        doc: 'Origin to allow via cors',
+        format: 'url',
+        default: 'http://localhost:3000',
+        env: environment('CORS_ORIGIN')
     }
 }).loadFile('config.json');
 
@@ -56,6 +63,8 @@ interface Config {
     readonly dbConnectionString: string;
 
     readonly cookieSecret: string;
+
+    readonly corsOrigin: string;
 }
 
 const config: Config = {
@@ -64,7 +73,8 @@ const config: Config = {
     minLogLevel: configuration.get('minLogLevel'),
     maxLogFileSize: configuration.get('maxLogFileSize'),
     dbConnectionString: configuration.get('dbConnectionString'),
-    cookieSecret: configuration.get('cookieSecret')
+    cookieSecret: configuration.get('cookieSecret'),
+    corsOrigin: configuration.get('corsOrigin')
 };
 
 export default config;

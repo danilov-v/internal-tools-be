@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
 import CustomStrategy from 'passport-custom';
@@ -29,7 +30,13 @@ passport.use(new CustomStrategy.Strategy(function (req, done) {
                 return done(null, false);
             }
 
-            return done(null, { username: auth.login, role: auth.role.name });
+            return done(null, {
+                username: auth.login,
+                role: auth.role.name,
+                firstName: auth.user.firstName,
+                lastName: auth.user.lastName,
+                middleName: auth.user.middleName
+            });
         });
     });
 
@@ -70,6 +77,7 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors({ origin: config.corsOrigin, credentials: true }));
 app.use(cookieSession({
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 7,

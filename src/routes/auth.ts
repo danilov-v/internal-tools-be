@@ -18,15 +18,14 @@ authRouter.post('/login', function (req, res, next) {
                 return next(err);
             }
 
-            res.status(205);
-            res.json({ message: 'Success' });
+            res.json(user);
         });
     })(req, res, next);
 });
 
 authRouter.post('/logout', function (req, res) {
     req.logOut();
-    res.status(205);
+    res.status(200);
     res.json({ message: 'Success' });
 });
 
