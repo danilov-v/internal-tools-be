@@ -10,6 +10,7 @@ export const authenticateRoutesExcept = function (whiteList: string[]) {
             return next();
         }
 
-        res.sendStatus(401);
+        res.status(401);
+        res.json({ message: 'Unauthorized' });
     };
 };

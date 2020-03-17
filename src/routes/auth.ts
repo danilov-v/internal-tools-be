@@ -26,7 +26,8 @@ authRouter.post('/login', function (req, res, next) {
 
 authRouter.post('/logout', function (req, res) {
     req.logOut();
-    res.sendStatus(205);
+    res.status(205);
+    res.json({ message: 'Success' });
 });
 
 export default authRouter;
