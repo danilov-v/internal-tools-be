@@ -31,7 +31,7 @@ passport.use(new CustomStrategy.Strategy(function (req, done) {
             }
 
             return done(null, {
-                username: auth.login,
+                login: auth.login,
                 role: auth.role.name,
                 firstName: auth.user.firstName,
                 lastName: auth.user.lastName,
