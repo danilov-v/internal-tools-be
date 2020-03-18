@@ -1,9 +1,9 @@
 {
     "port": 3001,
-
     "logFile": "it-tools.logs.log",
     "minLogLevel": "debug",
     "maxLogFileSize": 4194304,
-
-    "dbConnectionString": "postgres://postgres:postgres@localhost:5432/it_tools"
+    "dbConnectionString": "postgres://postgres:postgres@localhost:5432/it_tools",
+    "cookieSecret": "not_so_secret_secret",
+    "corsOrigin": "http://localhost:3000"
 }
