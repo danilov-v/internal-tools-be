@@ -2,13 +2,13 @@ import * as Knex from 'knex';
 
 export async function up(knex: Knex): Promise<any> {
     return Promise.all([
-        knex('roles').del()
+        knex('roles')
             .insert([
                 { id: 1, name: 'admin' },
                 { id: 2, name: 'viewer' }
             ]),
 
-        knex('ranks').del()
+        knex('ranks')
             .insert([
                 { id: 1, name: 'генерал-полковник', value: 1 },
                 { id: 2, name: 'генерал-лейтенант', value: 2 },
@@ -30,7 +30,7 @@ export async function up(knex: Knex): Promise<any> {
                 { id: 18, name: 'рядовой', value: 18 },
             ]),
 
-        knex('unit_types').del()
+        knex('unit_types')
             .insert([
                 { id: 1, name: 'воинская часть' },
                 { id: 2, name: 'бригада' },
@@ -40,14 +40,14 @@ export async function up(knex: Knex): Promise<any> {
                 { id: 6, name: 'отделение' }
             ]),
 
-        knex('units').del()
+        knex('units')
             .insert([
                 { id: 1, name: 'военная академия', parent_unit: null, type_id: 1 },
                 { id: 2, name: 'центр обеспечения учебного процесса', parent_unit: 1, type_id: 2 },
                 { id: 3, name: 'рота информационных технологий', parent_unit: 2, type_id: 4 },
             ]),
 
-        knex('users').del()
+        knex('users')
             .insert([
                 {
                     id: 1,
@@ -65,7 +65,7 @@ export async function up(knex: Knex): Promise<any> {
                 }
             ]),
 
-        knex('auth').del()
+        knex('auth')
             .insert([
                 {
                     id: 1,
