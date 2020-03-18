@@ -26,6 +26,7 @@ module.exports = {
         'space-in-parens': ['error', 'never'],
         'no-trailing-spaces': 'warn',
         'quotes': ['error', 'single'],
+        'keyword-spacing': ['error', { 'after': true }],
 
         'object-curly-spacing': ['error', 'always'],
         'key-spacing': ['error', { 'beforeColon': false, 'afterColon': true }],
