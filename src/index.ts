@@ -13,6 +13,7 @@ import bodyParser from 'body-parser';
 import authRouter from './routes/auth';
 import { authenticateRoutesExcept } from './express-middleware/auth';
 import authService from './business/auth.service';
+import personnelRouter from './routes/personnel';
 
 // Passport
 passport.use(new CustomStrategy.Strategy(async function (req, done) {
@@ -85,6 +86,7 @@ app.get('/', function (req, res) {
 });
 
 app.use(authRouter);
+app.use(personnelRouter);
 
 knex.migrate.latest().then((res) => {
     logger.info(`Ran migrations:\n\t${res[1].join('\n\t')}`);
