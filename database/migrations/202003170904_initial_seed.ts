@@ -70,7 +70,7 @@ export async function up(knex: Knex): Promise<any> {
                 {
                     id: 1,
                     login: 'admin',
-                    password: '$2y$10$YUbbx0qVTCM/SDSi3UKmqev87nvgD/m.8HHvUVlZJD01d3mS7nhfu', //'admin' Used bcrypt with rounds = 10 (default)
+                    password: '$2a$10$5Ka8Yx5WmBF64PRrTmPZgez8oHDTRFhCeOV9T1EMiBeHPLkDsqqfO', //'admin' Used bcrypt with rounds = 10 (default)
                     created_at: knex.fn.now(),
                     created_by: 1,
                     deleted_at: null,
