@@ -13,6 +13,7 @@ personnelRouter.get('/personnel', function (req, res) {
     personnelService.getByUnitId(unitId).then(function (personnel) {
         const result = personnel.map(function (x) {
             return {
+                id: x.id,
                 firstName: x.firstName,
                 lastName: x.lastName,
                 middleName: x.middleName,

@@ -1,7 +1,8 @@
 import Personnel from '../data/personnel';
 
 const personnelService = {
-    getByUnitId(unitId: number): Promise<{ firstName: string;
+    getByUnitId(unitId: number): Promise<{ id: number;
+                                           firstName: string;
                                            lastName: string;
                                            middleName: string;
                                            calledAt: Date;
@@ -13,6 +14,7 @@ const personnelService = {
         return Personnel.getByUnitId(unitId).then(function (personnel) {
             return personnel.map(function(x) {
                 return {
+                    id: x.id,
                     firstName: x.user.firstName,
                     lastName: x.user.lastName,
                     middleName: x.user.middleName,
