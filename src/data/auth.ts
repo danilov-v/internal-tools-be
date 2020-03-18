@@ -12,8 +12,8 @@ class Auth extends BaseModel {
 
     static getByLogin(login: string): Promise<Auth | null> {
         return Auth.query()
-            .withGraphFetched('role')
-            .withGraphFetched('user')
+            .withGraphJoined('role')
+            .withGraphJoined('user')
             .where('login', login)
             .then(entities => {
                 if (entities.length > 1) {

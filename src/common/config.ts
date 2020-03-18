@@ -8,7 +8,7 @@ const configuration = convict({
     port: {
         doc: 'Port to be used by the app',
         format: 'port',
-        default: 3000,
+        default: 3001,
         env: environment('PORT')
     },
 
