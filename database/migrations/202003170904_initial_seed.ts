@@ -1,14 +1,12 @@
 import * as Knex from 'knex';
 
 export async function up(knex: Knex): Promise<any> {
-    return Promise.all([
-        knex('roles')
-            .insert([
-                { id: 1, name: 'admin' },
-                { id: 2, name: 'viewer' }
-            ]),
-
-        knex('ranks')
+    return knex('roles')
+        .insert([
+            { id: 1, name: 'admin' },
+            { id: 2, name: 'viewer' }
+        ])
+        .then(() => knex('ranks')
             .insert([
                 { id: 1, name: 'генерал-полковник', value: 180 },
                 { id: 2, name: 'генерал-лейтенант', value: 170 },
@@ -28,9 +26,8 @@ export async function up(knex: Knex): Promise<any> {
                 { id: 16, name: 'младший сержант', value: 30 },
                 { id: 17, name: 'ефрейтор', value: 20 },
                 { id: 18, name: 'рядовой', value: 10 },
-            ]),
-
-        knex('unit_types')
+            ]))
+        .then(() => knex('unit_types')
             .insert([
                 { id: 1, name: 'воинская часть' },
                 { id: 2, name: 'бригада' },
@@ -38,16 +35,14 @@ export async function up(knex: Knex): Promise<any> {
                 { id: 4, name: 'рота' },
                 { id: 5, name: 'взвод' },
                 { id: 6, name: 'отделение' }
-            ]),
-
-        knex('units')
+            ]))
+        .then(() => knex('units')
             .insert([
                 { id: 1, name: 'военная академия', parent_unit: null, type_id: 1 },
                 { id: 2, name: 'центр обеспечения учебного процесса', parent_unit: 1, type_id: 2 },
                 { id: 3, name: 'рота информационных технологий', parent_unit: 2, type_id: 4 },
-            ]),
-
-        knex('users')
+            ]))
+        .then(() => knex('users')
             .insert([
                 {
                     id: 1,
@@ -63,9 +58,8 @@ export async function up(knex: Knex): Promise<any> {
                     updated_at: null,
                     updated_by: null
                 }
-            ]),
-
-        knex('auth')
+            ]))
+        .then(() => knex('auth')
             .insert([
                 {
                     id: 1,
@@ -78,10 +72,14 @@ export async function up(knex: Knex): Promise<any> {
                     role_id: 1,
                     user_id: 1
                 }
-            ])
-    ]);
+            ]));
 }
 
 export async function down(knex: Knex): Promise<any> {
-    return Promise.resolve();
+    return knex('auth').where('id', 1).del()
+        .then(() => knex('roles').whereIn('id', [ 1, 2 ]).del())
+        .then(() => knex('users').where('id', 1).del())
+        .then(() => knex('ranks').whereBetween('id', [ 1, 18 ]).del())
+        .then(() => knex('units').whereBetween('id', [ 1, 3 ]).del())
+        .then(() => knex('unit_types').whereBetween('id', [ 1, 6 ]).del())
 }
