@@ -1,14 +1,4 @@
-import * as convict from 'convict';
-
-interface Config {
-    readonly port: number;
-
-    readonly logFile: string;
-    readonly maxLogFileSize: number;
-    readonly minLogLevel: string;
-
-    readonly dbConnectionString: string;
-}
+import convict from 'convict';
 
 function environment(name: string) {
     return 'IT_TOOLS_' + name;
@@ -18,7 +8,7 @@ const configuration = convict({
     port: {
         doc: 'Port to be used by the app',
         format: 'port',
-        default: 3000,
+        default: 3001,
         env: environment('PORT')
     },
 
@@ -46,15 +36,45 @@ const configuration = convict({
         format: '*',
         default: 'postgres://postgres:postgres@localhost:5432/it_tools',
         env: environment('DB_CONNECTION_STRING')
+    },
+
+    cookieSecret: {
+        doc: 'Secret to be used by cookies',
+        format: '*',
+        default: 'not_so_secret_secret',
+        env: environment('COOKIE_SECRET')
+    },
+
+    corsOrigin: {
+        doc: 'Origin to allow via cors',
+        format: 'url',
+        default: 'http://localhost:3000',
+        env: environment('CORS_ORIGIN')
     }
 }).loadFile('config.json');
+
+interface Config {
+    readonly port: number;
+
+    readonly logFile: string;
+    readonly maxLogFileSize: number;
+    readonly minLogLevel: string;
+
+    readonly dbConnectionString: string;
+
+    readonly cookieSecret: string;
+
+    readonly corsOrigin: string;
+}
 
 const config: Config = {
     port: configuration.get('port'),
     logFile: configuration.get('logFile'),
     minLogLevel: configuration.get('minLogLevel'),
     maxLogFileSize: configuration.get('maxLogFileSize'),
-    dbConnectionString: configuration.get('dbConnectionString')
+    dbConnectionString: configuration.get('dbConnectionString'),
+    cookieSecret: configuration.get('cookieSecret'),
+    corsOrigin: configuration.get('corsOrigin')
 };
 
 export default config;
