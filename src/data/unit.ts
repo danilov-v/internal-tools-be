@@ -6,10 +6,11 @@ class Unit extends BaseModel {
     name!: string;
 
     type!: UnitType;
-    unit: Unit;
+    parent: Unit;
+    children: Unit[];
 
     static relationMappings: RelationMappings = {
-        role: {
+        type: {
             relation: Model.HasOneRelation,
             modelClass: UnitType,
             join: {
@@ -17,12 +18,20 @@ class Unit extends BaseModel {
                 to: 'unit_types.id'
             }
         },
-        user: {
+        parent: {
             relation: Model.HasOneRelation,
             modelClass: Unit,
             join: {
                 from: 'units.parent_unit',
                 to: 'units.id'
+            }
+        },
+        children: {
+            relation: Model.HasManyRelation,
+            modelClass: Unit,
+            join: {
+                from: 'units.id',
+                to: 'units.parent_unit'
             }
         }
     };

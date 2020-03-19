@@ -5,8 +5,11 @@ import { Model, RelationMappings } from 'objection';
 
 class Personnel extends BaseModel {
     calledAt!: Date;
-    demobilizationAt: Date;
-    comment: string;
+    demobilizationAt?: Date;
+    comment?: string;
+
+    unitId!: number;
+    userId!: number;
 
     unit!: Unit;
     user!: User;
@@ -29,14 +32,6 @@ class Personnel extends BaseModel {
             }
         }
     };
-
-
-    static getByUnitId(unitId: number): Promise<Personnel[]> {
-        return Personnel.query()
-            .withGraphJoined('user')
-            .withGraphJoined('unit')
-            .where('unit_id', unitId);
-    }
 
     static tableName = 'personnel';
 }

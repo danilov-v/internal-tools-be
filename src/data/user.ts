@@ -2,9 +2,9 @@ import BaseModel from './base.model';
 
 class User extends BaseModel {
     createdAt!: Date;
-    updatedAt!: Date;
-    createdBy!: string;
-    updatedBy!: string;
+    updatedAt?: Date;
+    createdBy!: number;
+    updatedBy?: number;
 
     firstName!: string;
     middleName?: string;
@@ -12,6 +12,8 @@ class User extends BaseModel {
     birthday!: Date;
     phone!: string;
     position?: string;
+
+    rankId!: number;
 
     static tableName = 'users';
 }

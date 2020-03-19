@@ -27,6 +27,7 @@ passport.use(new CustomStrategy.Strategy(async function (req, done) {
     }
 
     return done(null, {
+        id: authInfo.id,
         login: authInfo.login,
         role: authInfo.role,
         firstName: authInfo.firstName,
@@ -54,6 +55,9 @@ const knex = Knex({
     seeds: {
         directory: path.join(__dirname, '..', 'database/seeds')
     }
+});
+knex.on('query', query => {
+    logger.debug(query.sql);
 });
 Model.knex(knex);
 
