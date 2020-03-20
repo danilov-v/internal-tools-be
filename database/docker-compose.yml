@@ -2,11 +2,11 @@ version: '3'
 services:
   database:
     image: postgres:12-alpine
-    container_name: 'postgres'
+    container_name: postgres
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
-      - './db_data:/var/lib/postgresql/data'
+      - ./db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
@@ -14,7 +14,7 @@ services:
 
   create_database:
     image: postgres:12-alpine
-    container_name: 'it_tools_database_creator'
+    container_name: it_tools_database_creator
     restart: on-failure
     command: psql -h postgres -U postgres -f /custom_scripts/CreateDatabase.sql
     depends_on:
