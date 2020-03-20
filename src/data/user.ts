@@ -2,16 +2,16 @@ import BaseModel from './base.model';
 
 class User extends BaseModel {
     createdAt!: Date;
-    updatedAt?: Date;
+    updatedAt?: Date | null;
     createdBy!: number;
-    updatedBy?: number;
+    updatedBy?: number | null;
 
     firstName!: string;
-    middleName?: string;
+    middleName?: string | null;
     lastName!: string;
     birthday!: Date;
     phone!: string;
-    position?: string;
+    position?: string | null;
 
     rankId!: number;
 

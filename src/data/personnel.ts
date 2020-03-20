@@ -5,8 +5,8 @@ import { Model, RelationMappings } from 'objection';
 
 class Personnel extends BaseModel {
     calledAt!: Date;
-    demobilizationAt?: Date;
-    comment?: string;
+    demobilizationAt?: Date | null;
+    comment?: string | null;
 
     unitId!: number;
     userId!: number;
