@@ -7,9 +7,10 @@ import morgan from 'morgan';
 import Knex from 'knex';
 import path from 'path';
 import { Model } from 'objection';
+import bodyParser from 'body-parser';
+
 import config from './common/config';
 import logger from './common/logger';
-import bodyParser from 'body-parser';
 import authRouter from './routes/auth';
 import { authenticateRoutesExcept } from './express-middleware/auth';
 import authService from './business/auth.service';
