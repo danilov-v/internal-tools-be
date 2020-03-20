@@ -5,9 +5,15 @@
     "main": "index.js",
     "scripts": {
         "build": "tsc",
-        "start": "ts-node src/index.ts",
+        "knex": "knex",
         "lint": "eslint **/*.ts",
-        "lint-fix": "eslint **/*.ts --fix",
+        "lint:fix": "eslint **/*.ts --fix",
+        "migrate:latest": "knex migrate:latest",
+        "migrate:make": "knex migrate:make",
+        "migrate:status": "knex migrate:status",
+        "seed:initial": "knex seed:run --specific=initial_data.js",
+        "seed:make": "knex seed:make",
+        "start": "ts-node src/index.ts",
         "test": "jest"
     },
     "repository": {

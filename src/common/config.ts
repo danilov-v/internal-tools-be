@@ -5,6 +5,13 @@ function environment(name: string) {
 }
 
 const configuration = convict({
+    env: {
+        doc: 'The application environment.',
+        format: [ 'production', 'development', 'test' ],
+        default: 'development',
+        env: 'NODE_ENV'
+    },
+
     port: {
         doc: 'Port to be used by the app',
         format: 'port',

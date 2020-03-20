@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<any> {
         table.dateTime('created_at', { useTz: false }).notNullable().defaultTo(knex.fn.now());
         table.integer('created_by').notNullable();
         table.dateTime('deleted_at', { useTz: false });
-        table.integer('deleted_by').references('id').inTable('auth');
+        table.integer('deleted_by');
         table.integer('role_id').notNullable().references('id').inTable('roles');
         table.integer('user_id').notNullable().references('id').inTable('users');
     });
