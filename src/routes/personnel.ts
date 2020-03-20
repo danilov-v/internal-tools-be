@@ -3,6 +3,9 @@ import logger from '../common/logger';
 import Personnel from '../data/personnel';
 import User from '../data/user';
 import Unit from '../data/unit';
+import { CreatePersonnelDto } from './dtos/createPersonnelDto';
+import { PersonnelDetailsDto } from './dtos/personnelDetailsDto';
+import { PersonnelInfoDto } from './dtos/personnelInfoDto';
 const personnelRouter = express.Router();
 
 function extractIds(units: Unit[]) {
@@ -36,19 +39,9 @@ personnelRouter.get('/personnel', async function (req, res) {
             .withGraphJoined('unit')
             .whereIn('unit_id', childUnitIds);
 
-        const result = personnel.map(function (x) {
-            return {
-                id: x.id,
-                firstName: x.user.firstName,
-                lastName: x.user.lastName,
-                middleName: x.user.middleName,
-                calledAt: x.calledAt,
-                demobilizationAt: x.demobilizationAt,
-                unitId: x.unitId
-            };
-        });
-
-        res.json(result);
+        res.json(personnel.map(function (x) {
+            return new PersonnelInfoDto(x);
+        }));
     } catch (err) {
         logger.error(err);
         res.status(500);
@@ -74,22 +67,7 @@ personnelRouter.get('/personnel/:personnelId', async function (req, res) {
             return res.json({ message: `Personnel with id ${personnelId} not found` });
         }
 
-        const result = {
-            id: personnel.id,
-            firstName: personnel.user.firstName,
-            lastName: personnel.user.lastName,
-            middleName: personnel.user.middleName,
-            calledAt: personnel.calledAt,
-            demobilizationAt: personnel.demobilizationAt,
-            phone: personnel.user.phone,
-            comment: personnel.comment,
-            birthday: personnel.user.birthday,
-            position: personnel.user.position,
-            unitId: personnel.unitId,
-            rankId: personnel.user.rankId
-        };
-
-        res.json(result);
+        res.json(new PersonnelDetailsDto(personnel.user, personnel));
     } catch (err) {
         logger.error(err);
         res.status(500);
@@ -99,39 +77,17 @@ personnelRouter.get('/personnel/:personnelId', async function (req, res) {
 
 personnelRouter.post('/personnel', async function (req, res) {
     try {
+        const { validationErrors, dto } = CreatePersonnelDto.create(req.body);
+
+        if (validationErrors) {
+            res.status(404);
+            return res.json(validationErrors);
+        }
+
         const result = await Personnel.transaction(async function (trx) {
-            const user = await User.query(trx).insert({
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                middleName: req.body.middleName,
-                phone: req.body.phone,
-                birthday: req.body.birthday,
-                position: req.body.position,
-                rankId: req.body.rankId,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                createdBy: (req.user as any).id
-            });
-            const personnel = await Personnel.query(trx).insert({
-                calledAt: req.body.calledAt,
-                demobilizationAt: req.body.demobilizationAt,
-                comment: req.body.comment,
-                unitId: req.body.unitId,
-                userId: user.id
-            });
-            return {
-                id: personnel.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                middleName: user.middleName,
-                calledAt: personnel.calledAt,
-                demobilizationAt: personnel.demobilizationAt,
-                phone: user.phone,
-                comment: personnel.comment,
-                birthday: user.birthday,
-                position: user.position,
-                unitId: personnel.unitId,
-                rankId: user.rankId
-            };
+            const user = await User.query(trx).insert(dto.getUser(1/* (req.user as any).id */));
+            const personnel = await Personnel.query(trx).insert(dto.getPersonnel(user.id));
+            return new PersonnelDetailsDto(user, personnel);
         });
 
         res.json(result);

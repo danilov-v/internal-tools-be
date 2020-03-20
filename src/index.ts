@@ -8,6 +8,7 @@ import Knex from 'knex';
 import path from 'path';
 import { Model } from 'objection';
 import bodyParser from 'body-parser';
+import validate from 'validate.js';
 
 import config from './common/config';
 import logger from './common/logger';
@@ -15,6 +16,7 @@ import authRouter from './routes/auth';
 import { authenticateRoutesExcept } from './express-middleware/auth';
 import authService from './business/auth.service';
 import personnelRouter from './routes/personnel';
+import { customDate } from './utils/customValidators';
 
 // Passport
 passport.use(new CustomStrategy.Strategy(async function (req, done) {
@@ -57,10 +59,9 @@ const knex = Knex({
         directory: path.join(__dirname, '..', 'database/seeds')
     }
 });
-knex.on('query', query => {
-    logger.debug(query.sql);
-});
 Model.knex(knex);
+
+validate.validators.customDate = customDate;
 
 const app = express();
 app.use(

@@ -16,6 +16,10 @@ class User extends BaseModel {
     rankId!: number;
 
     static tableName = 'users';
+
+    $beforeInsert() {
+        this.createdAt = new Date();
+    }
 }
 
 export default User;

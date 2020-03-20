@@ -21,7 +21,7 @@ module.exports = {
         'no-extra-semi': 'warn',
         'eol-last': 'warn',
         'no-var': 'error',
-        'indent': ['error', 4 ],
+        'indent': ['error', 4, { 'FunctionExpression': { 'parameters': 'first' } } ],
         'linebreak-style': ['error', 'unix'],
         'space-in-parens': ['error', 'never'],
         'no-trailing-spaces': 'warn',
