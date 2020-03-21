@@ -1,5 +1,6 @@
-import { validate } from 'validate.js';
+import ow from 'ow';
 import { deserializeDate } from '../../utils/date';
+import { isDateString } from '../../utils/customValidators';
 
 export class CreatePersonnelDto {
     private constructor(public firstName: string,
@@ -38,13 +39,10 @@ export class CreatePersonnelDto {
         };
     }
 
-    static create(reqBody): { validationErrors; dto: CreatePersonnelDto} {
-        const validationErrors = validate(reqBody, this.validationConstraints);
-        if (validationErrors) {
-            return { validationErrors, dto: null };
-        }
+    static create(reqBody): CreatePersonnelDto {
+        this.throwIfInvalid(reqBody);
 
-        const dto = new CreatePersonnelDto(
+        return new CreatePersonnelDto(
             reqBody.firstName,
             reqBody.lastName,
             reqBody.middleName ? reqBody.middleName : null,
@@ -56,61 +54,18 @@ export class CreatePersonnelDto {
             reqBody.position,
             Number(reqBody.unitId),
             Number(reqBody.rankId));
-
-        return { validationErrors: null, dto };
     }
 
-    private static readonly validationConstraints = {
-        firstName: {
-            presence: { allowEmpty: false }
-        },
-        lastName: {
-            presence: { allowEmpty: false }
-        },
-        middleName: {
-            length: { minimum: 1 }
-        },
-        calledAt: {
-            presence: true,
-            customDate: {
-                dateOnly: true
-            }
-        },
-        demobilizationAt: {
-            presence: true,
-            customDate: {
-                dateOnly: true
-            }
-        },
-        phone: {
-            presence: true,
-            format: {
-                // eslint-disable-next-line no-useless-escape
-                pattern: '\\+[0-9]*'
-            }
-        },
-        birthday: {
-            presence: true,
-            customDate: {
-                dateOnly: true
-            }
-        },
-        position: {
-            presence: { allowEmpty: false }
-        },
-        unitId: {
-            presence: true,
-            numericality: {
-                onlyInteger: true,
-                greaterThan: 0
-            }
-        },
-        rankId: {
-            presence: true,
-            numericality: {
-                onlyInteger: true,
-                greaterThan: 0
-            }
-        }
-    };
+    private static throwIfInvalid(reqBody) {
+        ow(reqBody.firstName, 'firstName', ow.string.nonEmpty);
+        ow(reqBody.lastName, 'lastName', ow.string.nonEmpty);
+        ow(reqBody.middleName, 'middleName', ow.any(ow.nullOrUndefined, ow.string.nonEmpty));
+        ow(reqBody.phone, 'phone', ow.string.matches(/\+[0-9]*'/));
+        ow(reqBody.position, 'position', ow.string.nonEmpty);
+        ow(reqBody.unitId, 'unitId', ow.number.integer);
+        ow(reqBody.rankId, 'rankId', ow.number.integer);
+        ow(reqBody.calledAt, 'calledAt', ow.string.validate(isDateString));
+        ow(reqBody.birthday, 'birthday', ow.string.validate(isDateString));
+        ow(reqBody.demobilizationAt, 'demobilizationAt', ow.any(ow.nullOrUndefined, ow.string.validate(isDateString)));
+    }
 }

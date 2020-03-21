@@ -6,6 +6,7 @@ import Unit from '../data/unit';
 import { CreatePersonnelDto } from './dtos/createPersonnelDto';
 import { PersonnelDetailsDto } from './dtos/personnelDetailsDto';
 import { PersonnelInfoDto } from './dtos/personnelInfoDto';
+import { ArgumentError } from 'ow';
 const personnelRouter = express.Router();
 
 function extractIds(units: Unit[]) {
@@ -77,12 +78,7 @@ personnelRouter.get('/personnel/:personnelId', async function (req, res) {
 
 personnelRouter.post('/personnel', async function (req, res) {
     try {
-        const { validationErrors, dto } = CreatePersonnelDto.create(req.body);
-
-        if (validationErrors) {
-            res.status(404);
-            return res.json(validationErrors);
-        }
+        const dto = CreatePersonnelDto.create(req.body);
 
         const result = await Personnel.transaction(async function (trx) {
             const user = await User.query(trx).insert(dto.getUser(1/* (req.user as any).id */));
@@ -92,6 +88,12 @@ personnelRouter.post('/personnel', async function (req, res) {
 
         res.json(result);
     } catch (err) {
+        if (err instanceof ArgumentError) {
+            logger.info(`Validation failed: ${err}`);
+            res.status(400);
+            return res.json({ message: err.message });
+        }
+
         logger.error(err);
         res.status(500);
         res.json({ message: 'Internal server error' });

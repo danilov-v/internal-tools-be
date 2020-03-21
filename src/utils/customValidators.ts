@@ -1,13 +1,23 @@
-import { isValid, parse, parseISO } from 'date-fns';
+import { isValid } from 'date-fns';
+import { CustomValidator } from 'ow/dist/source/predicates/predicate';
+import { deserializeDate } from './date';
 
-export function customDate (value, options) {
-    const date = options.dateOnly
-        ? parse(value, 'yyyy-MM-dd', new Date(0, 0, 0, 0, 0, 0, 0))
-        : parseISO(value);
+const isDateString: CustomValidator<string> = function (value) {
+    const date = deserializeDate(value);
 
     if (!isValid(date)) {
-        return 'must be a valid date';
+        return {
+            message: function (label) { return `${label} must a date string (yyyy-MM-dd)`; },
+            validator: false
+        };
     }
 
-    return null;
-}
+    return {
+        message: '',
+        validator: true
+    };
+};
+
+export {
+    isDateString
+};
