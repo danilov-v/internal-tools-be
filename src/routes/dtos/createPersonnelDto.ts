@@ -60,7 +60,7 @@ export class CreatePersonnelDto {
         ow(reqBody.firstName, 'firstName', ow.string.nonEmpty);
         ow(reqBody.lastName, 'lastName', ow.string.nonEmpty);
         ow(reqBody.middleName, 'middleName', ow.any(ow.nullOrUndefined, ow.string.nonEmpty));
-        ow(reqBody.phone, 'phone', ow.string.matches(/\+[0-9]*'/));
+        ow(reqBody.phone, 'phone', ow.string.matches(/^[+][0-9]*$/));
         ow(reqBody.position, 'position', ow.string.nonEmpty);
         ow(reqBody.unitId, 'unitId', ow.number.integer);
         ow(reqBody.rankId, 'rankId', ow.number.integer);

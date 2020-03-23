@@ -7,7 +7,7 @@ const isDateString: CustomValidator<string> = function (value) {
 
     if (!isValid(date)) {
         return {
-            message: function (label) { return `${label} must a date string (yyyy-MM-dd)`; },
+            message: function (label) { return `${label} must be a date string (yyyy-MM-dd)`; },
             validator: false
         };
     }
