@@ -55,6 +55,11 @@ const knex = Knex({
         directory: path.join(__dirname, '..', 'database/seeds')
     }
 });
+if (config.logQueries) {
+    knex.on('query', function (query) {
+        logger.debug(query.sql);
+    });
+}
 Model.knex(knex);
 
 const app = express();
@@ -88,6 +93,9 @@ app.get('/', function (req, res) {
 app.use(authRouter);
 
 knex.migrate.latest().then((res) => {
-    logger.info(`Ran migrations:\n\t${res[1].join('\n\t')}`);
+    if (res[1].length > 0) {
+        logger.info(`Ran migrations:\n\t${res[1].join('\n\t')}`);
+    }
+
     app.listen(config.port, () => logger.info(`Listening on port ${config.port}`));
 });
