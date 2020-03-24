@@ -8,6 +8,4 @@ it-tools.logs*.log
 
 # build
 build
-src/**/*.js
-src/**/*.js.map
 database/db_data
