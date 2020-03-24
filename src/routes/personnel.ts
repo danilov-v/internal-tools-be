@@ -89,7 +89,8 @@ personnelRouter.post('/personnel', async function (req, res) {
         const dto = plainToClass(CreatePersonnelDto, req.body);
 
         const result = await Personnel.transaction(async function (trx) {
-            const user = await User.query(trx).insert(dto.getUser(1/* (req.user as any).id */));
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const user = await User.query(trx).insert(dto.getUser((req.user as any).id));
             const personnel = await Personnel.query(trx).insert(dto.getPersonnel(user.id));
             return new PersonnelDetailsDto(user, personnel);
         });
