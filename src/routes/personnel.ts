@@ -1,12 +1,17 @@
 import express from 'express';
+import { ArgumentError } from 'ow';
+import { plainToClass } from 'class-transformer';
 import logger from '../common/logger';
 import Personnel from '../data/personnel';
 import User from '../data/user';
 import Unit from '../data/unit';
-import { CreatePersonnelDto } from './dtos/createPersonnelDto';
-import { PersonnelDetailsDto } from './dtos/personnelDetailsDto';
-import { PersonnelInfoDto } from './dtos/personnelInfoDto';
-import { ArgumentError } from 'ow';
+import { CreatePersonnelDto, PersonnelDetailsDto, PersonnelInfoDto } from './dtos';
+import {
+    validateCreatePersonnelRequest,
+    validateGetPersonnelByIdRequest,
+    validateGetPersonnelRequest
+} from './request-validators';
+
 const personnelRouter = express.Router();
 
 function extractIds(units: Unit[]) {
@@ -22,12 +27,8 @@ function extractIds(units: Unit[]) {
 
 personnelRouter.get('/personnel', async function (req, res) {
     try {
+        validateGetPersonnelRequest(req);
         const unitId = Number(req.query.unitId);
-
-        if (!unitId) {
-            res.status(400);
-            return res.json({ message: 'Unit id has to be specified' });
-        }
 
         const units = await Unit.query()
             .withGraphFetched('children.^')
@@ -40,10 +41,14 @@ personnelRouter.get('/personnel', async function (req, res) {
             .withGraphJoined('unit')
             .whereIn('unit_id', childUnitIds);
 
-        res.json(personnel.map(function (x) {
-            return new PersonnelInfoDto(x);
-        }));
+        res.json(personnel.map(x => new PersonnelInfoDto(x)));
     } catch (err) {
+        if (err instanceof ArgumentError) {
+            logger.info(`Validation failed: ${err}`);
+            res.status(400);
+            return res.json({ message: err.message });
+        }
+
         logger.error(err);
         res.status(500);
         res.json({ message: 'Internal server error' });
@@ -52,12 +57,8 @@ personnelRouter.get('/personnel', async function (req, res) {
 
 personnelRouter.get('/personnel/:personnelId', async function (req, res) {
     try {
-        const personnelId = Number(req.params['personnelId']);
-
-        if (!personnelId) {
-            res.status(400);
-            return res.json({ message: 'Personnel id has to be specified' });
-        }
+        validateGetPersonnelByIdRequest(req);
+        const personnelId = Number(req.params.personnelId);
 
         const personnel = await Personnel.query()
             .withGraphJoined('user')
@@ -70,6 +71,12 @@ personnelRouter.get('/personnel/:personnelId', async function (req, res) {
 
         res.json(new PersonnelDetailsDto(personnel.user, personnel));
     } catch (err) {
+        if (err instanceof ArgumentError) {
+            logger.info(`Validation failed: ${err}`);
+            res.status(400);
+            return res.json({ message: err.message });
+        }
+
         logger.error(err);
         res.status(500);
         res.json({ message: 'Internal server error' });
@@ -78,7 +85,8 @@ personnelRouter.get('/personnel/:personnelId', async function (req, res) {
 
 personnelRouter.post('/personnel', async function (req, res) {
     try {
-        const dto = CreatePersonnelDto.create(req.body);
+        validateCreatePersonnelRequest(req);
+        const dto = plainToClass(CreatePersonnelDto, req.body);
 
         const result = await Personnel.transaction(async function (trx) {
             const user = await User.query(trx).insert(dto.getUser(1/* (req.user as any).id */));

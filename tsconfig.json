@@ -4,7 +4,8 @@
         "target": "es6",
         "sourceMap": false,
         "outDir": "build",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "experimentalDecorators": true
     },
     "include": [
         "src"

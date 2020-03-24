@@ -20,11 +20,11 @@ export class PersonnelDetailsDto {
         this.id = personnel.id;
         this.firstName = user.firstName;
         this.lastName = user.lastName;
-        this.middleName = user.middleName;
+        this.middleName = user.middleName !== undefined ? user.middleName : null;
         this.calledAt = serializeDate(personnel.calledAt);
         this.demobilizationAt = personnel.demobilizationAt ? serializeDate(personnel.demobilizationAt) : null;
         this.phone = user.phone;
-        this.comment = personnel.comment;
+        this.comment = personnel.comment !== undefined ? personnel.comment : null;
         this.birthday = serializeDate(user.birthday);
         this.position = user.position;
         this.unitId = personnel.unitId;
