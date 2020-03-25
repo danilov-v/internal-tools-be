@@ -14,6 +14,7 @@ import logger from './common/logger';
 import authRouter from './routes/auth';
 import { authenticateRoutesExcept } from './express-middleware/auth';
 import authService from './business/auth.service';
+import unitRouter from "./routes/unit";
 
 // Passport
 passport.use(new CustomStrategy.Strategy(async function (req, done) {
@@ -91,6 +92,7 @@ app.get('/', function (req, res) {
 });
 
 app.use(authRouter);
+app.use('/unit', unitRouter);
 
 knex.migrate.latest().then((res) => {
     if (res[1].length > 0) {
