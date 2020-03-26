@@ -37,6 +37,12 @@ const configuration = convict({
         default: 1024*1024*4,
         env: environment('LOG_FILE')
     },
+    logQueries: {
+        doc: 'Flag indicating if database queries should be logged',
+        format: '*',
+        default: true,
+        env: environment('LOG_QUERIES')
+    },
 
     dbConnectionString: {
         doc: 'Connection string to the database',
@@ -66,6 +72,7 @@ interface Config {
     readonly logFile: string;
     readonly maxLogFileSize: number;
     readonly minLogLevel: string;
+    readonly logQueries: boolean;
 
     readonly dbConnectionString: string;
 
@@ -75,10 +82,11 @@ interface Config {
 }
 
 const config: Config = {
-    port: configuration.get('port'),
+    port: Number(configuration.get('port')),
     logFile: configuration.get('logFile'),
     minLogLevel: configuration.get('minLogLevel'),
-    maxLogFileSize: configuration.get('maxLogFileSize'),
+    maxLogFileSize: Number(configuration.get('maxLogFileSize')),
+    logQueries: Boolean(configuration.get('logQueries')),
     dbConnectionString: configuration.get('dbConnectionString'),
     cookieSecret: configuration.get('cookieSecret'),
     corsOrigin: configuration.get('corsOrigin')

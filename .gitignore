@@ -8,5 +8,4 @@ it-tools.logs*.log
 
 # build
 build
-
 database/db_data
