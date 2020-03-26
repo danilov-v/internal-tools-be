@@ -14,15 +14,16 @@ import {
 
 const personnelRouter = express.Router();
 
-function extractIds(units: Unit[]) {
-    const ids: number[] = [];
+function processError(err: Error, res: express.Response) {
+    if (err instanceof ArgumentError) {
+        logger.info(`Validation failed: ${err}`);
+        res.status(400);
+        return res.json({ message: err.message });
+    }
 
-    units.map(function (unit) {
-        ids.push(unit.id);
-        ids.push(...extractIds(unit.children));
-    });
-
-    return ids;
+    logger.error(err);
+    res.status(500);
+    res.json({ message: 'Internal server error' });
 }
 
 personnelRouter.get('/personnel', async function (req, res) {
@@ -34,6 +35,8 @@ personnelRouter.get('/personnel', async function (req, res) {
             .withGraphFetched('children.^')
             .where('id', unitId);
 
+        const extractIds = (units: Unit[]): number[] => units.flatMap(unit => [ unit.id, ...extractIds(unit.children) ]);
+
         const childUnitIds = extractIds(units);
 
         const personnel = await Personnel.query()
@@ -43,15 +46,7 @@ personnelRouter.get('/personnel', async function (req, res) {
 
         res.json(personnel.map(x => new PersonnelInfoDto(x)));
     } catch (err) {
-        if (err instanceof ArgumentError) {
-            logger.info(`Validation failed: ${err}`);
-            res.status(400);
-            return res.json({ message: err.message });
-        }
-
-        logger.error(err);
-        res.status(500);
-        res.json({ message: 'Internal server error' });
+        processError(err, res);
     }
 });
 
@@ -71,15 +66,7 @@ personnelRouter.get('/personnel/:personnelId', async function (req, res) {
 
         res.json(new PersonnelDetailsDto(personnel.user, personnel));
     } catch (err) {
-        if (err instanceof ArgumentError) {
-            logger.info(`Validation failed: ${err}`);
-            res.status(400);
-            return res.json({ message: err.message });
-        }
-
-        logger.error(err);
-        res.status(500);
-        res.json({ message: 'Internal server error' });
+        processError(err, res);
     }
 });
 
@@ -97,15 +84,7 @@ personnelRouter.post('/personnel', async function (req, res) {
 
         res.json(result);
     } catch (err) {
-        if (err instanceof ArgumentError) {
-            logger.info(`Validation failed: ${err}`);
-            res.status(400);
-            return res.json({ message: err.message });
-        }
-
-        logger.error(err);
-        res.status(500);
-        res.json({ message: 'Internal server error' });
+        processError(err, res);
     }
 });
 

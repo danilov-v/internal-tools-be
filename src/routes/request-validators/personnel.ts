@@ -7,7 +7,7 @@ function validateCreatePersonnelRequest(req) {
     ow(body.firstName, 'firstName', ow.string.nonEmpty);
     ow(body.lastName, 'lastName', ow.string.nonEmpty);
     ow(body.middleName, 'middleName', ow.any(ow.nullOrUndefined, ow.string.nonEmpty));
-    ow(body.phone, 'phone', ow.string.matches(/^[+][0-9]*$/));
+    ow(body.phone, 'phone', ow.string.matches(/^\+\d{3,12}$/));
     ow(body.position, 'position', ow.string.nonEmpty);
     ow(body.unitId, 'unitId', ow.any(ow.number.integer, ow.string.numeric));
     ow(body.rankId, 'rankId', ow.any(ow.number.integer, ow.string.numeric));
