@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express from 'express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
@@ -14,6 +15,7 @@ import logger from './common/logger';
 import authRouter from './routes/auth';
 import { authenticateRoutesExcept } from './express-middleware/auth';
 import authService from './business/auth.service';
+import personnelRouter from './routes/personnel';
 
 // Passport
 passport.use(new CustomStrategy.Strategy(async function (req, done) {
@@ -27,6 +29,7 @@ passport.use(new CustomStrategy.Strategy(async function (req, done) {
     }
 
     return done(null, {
+        id: authInfo.id,
         login: authInfo.login,
         role: authInfo.role,
         firstName: authInfo.firstName,
@@ -91,6 +94,7 @@ app.get('/', function (req, res) {
 });
 
 app.use(authRouter);
+app.use(personnelRouter);
 
 knex.migrate.latest().then((res) => {
     if (res[1].length > 0) {

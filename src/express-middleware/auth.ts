@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 export const authenticateRoutesExcept = function (whiteList: string[]) {
     return function(req: Request, res: Response, next: NextFunction) {
-        if(whiteList.find(x => req.url.startsWith(x))) {
+        if (whiteList.find(x => req.url.startsWith(x))) {
             return next();
         }
 

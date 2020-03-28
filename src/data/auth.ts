@@ -4,11 +4,17 @@ import User from './user';
 import { Model, RelationMappings } from 'objection';
 
 class Auth extends BaseModel {
+    createdAt!: Date;
+
     login!: string;
     password!: string;
 
     role!: Role;
     user!: User;
+
+    $beforeInsert() {
+        this.createdAt = new Date();
+    }
 
     static getByLogin(login: string): Promise<Auth | null> {
         return Auth.query()
