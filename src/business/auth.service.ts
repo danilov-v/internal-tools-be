@@ -2,7 +2,8 @@ import { compare } from 'bcrypt';
 import Auth from '../data/auth';
 
 const authService = {
-    getByCredentials(login: string, password: string): Promise<{ login: string;
+    getByCredentials(login: string, password: string): Promise<{ id: number;
+                                                                 login: string;
                                                                  role: string;
                                                                  firstName: string;
                                                                  lastName: string;
@@ -18,6 +19,7 @@ const authService = {
                 }
 
                 return {
+                    id: auth.id,
                     login: auth.login,
                     role: auth.role.name,
                     firstName: auth.user.firstName,

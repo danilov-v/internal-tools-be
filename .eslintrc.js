@@ -21,11 +21,12 @@ module.exports = {
         'no-extra-semi': 'warn',
         'eol-last': 'warn',
         'no-var': 'error',
-        'indent': ['error', 4 ],
+        'indent': ['error', 4, { 'FunctionExpression': { 'parameters': 'first' } } ],
         'linebreak-style': ['error', 'unix'],
         'space-in-parens': ['error', 'never'],
         'no-trailing-spaces': 'warn',
         'quotes': ['error', 'single'],
+        'keyword-spacing': ['error', { 'after': true }],
 
         'object-curly-spacing': ['error', 'always'],
         'key-spacing': ['error', { 'beforeColon': false, 'afterColon': true }],

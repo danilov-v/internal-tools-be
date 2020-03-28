@@ -8,7 +8,7 @@ class Unit extends BaseModel {
     parentUnit?: number;
 
     type!: UnitType;
-    parent?: Unit;
+    parent: Unit;
     children: Unit[];
 
     static relationMappings: RelationMappings = {
