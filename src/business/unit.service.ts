@@ -1,57 +1,42 @@
-import Unit from "../data/unit";
-import handbookService from "./handbook.service";
-import logger from "../common/logger";
+import Unit from '../data/unit';
+import logger from '../common/logger';
+import { CreateUnitDto } from '../routes/dtos';
 
 const unitService = {
 
-    /**
-     * В случае обнаружения в базе данных юнита с полученными параметрами возвращает найденный юнит,
-     * иначе создает в бд новый объект с этими параметрами и возвращает его.
-     *
-     * @param query параметры запроса.
-     * Имеет следующий вид
-     * {
-     *   name:       string             -> имя подразделения ('1 отделение', '3 взвод'...),
-     *   parentUnit: number | undefined -> родитель подразделения или undefined
-     *                                     (В этом случае родителем будет считаться корневой элемент,
-     *                                     в случае с РИТ, корневым будет рота)
-     *   typeId:     number             -> тип подразделения (взвод, рота, дивизион, отделение, факультет...)
-     * }
-     * @return промис, содержащий Unit, с конкретным id(необходимо, чтобы связать несколько подразделений между собой).
-     * В случае возникновения ошибки возвращает <code>null</code>.
-     */
-    async findOrCreate(query): Promise<Unit | null> {
-        const params = Object.create(query);
+    async createOrGetExistingUnit(unitDto: CreateUnitDto): Promise<Unit> {
         try {
-            if (!params.parentUnit) {
-                params.parentUnit = await handbookService.getRootUnitId();
+            if (!unitDto.parentUnit) {
+                unitDto.parentUnit = await this.getRootUnitId();
             }
-            const units = await Unit.query()
-                .where('name', params.name)
-                .where('parent_unit', params.parentUnit)
-                .where('type_id', params.typeId);
-
-            return units.length
-                ? units[0]
-                : Unit.query().insert(params);
+            return await Unit.query()
+                .insert(unitDto)
+                .catch(async e => {
+                    logger.error(e);
+                    return (await Unit.query()
+                        .where('name', unitDto.name)
+                        .where('parent_unit', unitDto.parentUnit)
+                        .where('type_id', unitDto.typeId))[0] || {} as Unit;
+                });
         } catch (e) {
             logger.error(e);
-            return query;
+            return {} as Unit;
         }
     },
 
-    /**
-     * Находит и возвращает объект Unit по полученному id либо <code>null</code>, если такого объекта не существует.
-     * @param unitId идентификатор сущности.
-     */
-    async findUnit(unitId): Promise<Unit> {
+    async findAllUnits(): Promise<Unit[]> {
         try {
-            return Unit.query().findById(unitId);
+            return await Unit.query().where({});
         } catch (e) {
             logger.error(e);
-            return null;
+            return [];
         }
+    },
+
+    async getRootUnitId(): Promise<number> {
+        const unit = await Unit.query().findOne('name', 'like', 'рота%');
+        return unit.id;
     }
-}
+};
 
 export default unitService;
