@@ -12,11 +12,12 @@ import bodyParser from 'body-parser';
 
 import config from './common/config';
 import logger from './common/logger';
-import authRouter from './routes/auth';
 import { authenticateRoutesExcept } from './express-middleware/auth';
+import authRouter from './routes/auth';
 import authService from './business/auth.service';
 import personnelRouter from './routes/personnel';
 import rankRouter from './routes/rank';
+import unitRouter from './routes/unit';
 
 // Passport
 passport.use(new CustomStrategy.Strategy(async function (req, done) {
@@ -97,6 +98,7 @@ app.get('/', function (req, res) {
 app.use(authRouter);
 app.use(personnelRouter);
 app.use(rankRouter);
+app.use('/unit', unitRouter);
 
 knex.migrate.latest().then((res) => {
     if (res[1].length > 0) {

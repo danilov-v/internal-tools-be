@@ -4,6 +4,8 @@ import { Model, RelationMappings } from 'objection';
 
 class Unit extends BaseModel {
     name!: string;
+    typeId: number;
+    parentUnit?: number;
 
     type!: UnitType;
     parent: Unit;

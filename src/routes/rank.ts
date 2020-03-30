@@ -1,9 +1,10 @@
 import express from 'express';
 import { ArgumentError } from 'ow';
-import logger from '../common/logger';
-import { RankInfoDto } from './dtos';
 import { plainToClass } from 'class-transformer';
+
+import logger from '../common/logger';
 import rankService from '../business/rank.service';
+import { RankInfoDto } from './dtos';
 
 const rankRouter = express.Router();
 
