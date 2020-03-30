@@ -1,8 +1,9 @@
 import express from 'express';
 import { ArgumentError } from 'ow';
 import logger from '../common/logger';
-import Rank from '../data/rank';
 import { RankInfoDto } from './dtos';
+import { plainToClass } from 'class-transformer';
+import rankService from '../business/rank.service';
 
 const rankRouter = express.Router();
 
@@ -18,11 +19,11 @@ function processError(err: Error, res: express.Response) {
     res.json({ message: 'Internal server error' });
 }
 
-rankRouter.get('/rank', async function(req, res) {
+rankRouter.get('/rank', async (req, res) => {
     try {
-        const ranks = await Rank.query();
+        const ranks = await rankService.getAllRanks();
 
-        res.json(ranks.map(x => new RankInfoDto(x)));
+        res.json(plainToClass(RankInfoDto, ranks));
     } catch (err) {
         processError(err, res);
     }
