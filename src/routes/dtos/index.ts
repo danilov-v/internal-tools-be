@@ -1,11 +1,13 @@
 import { CreatePersonnelDto } from './createPersonnelDto';
+import { CreateUnitDto } from './createUnitDto';
 import { PersonnelDetailsDto } from './personnelDetailsDto';
 import { PersonnelInfoDto } from './personnelInfoDto';
-import { CreateUnitDto } from './createUnitDto';
+import { RankInfoDto } from './rankInfoDto';
 
 export {
     CreatePersonnelDto,
+    CreateUnitDto,
     PersonnelDetailsDto,
     PersonnelInfoDto,
-    CreateUnitDto
+    RankInfoDto
 };
