@@ -30,4 +30,15 @@ rankRouter.get('/rank', async (req, res) => {
     }
 });
 
+rankRouter.get('/rank/:rankId', async (req, res) => {
+    try {
+        let rankId = Number.parseInt(req.params.rankId);
+        const ranks = await rankService.getRankById(rankId);
+
+        res.json(plainToClass(RankInfoDto, ranks));
+    } catch (err) {
+        processError(err, res);
+    }
+});
+
 export default rankRouter;
