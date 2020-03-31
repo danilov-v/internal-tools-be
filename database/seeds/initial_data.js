@@ -1,36 +1,36 @@
 exports.seed = async function(knex) {
     await Promise.all([
         knex('roles').insert([
-            { id: 1, name: 'admin' },
-            { id: 2, name: 'viewer' }
+            { name: 'admin' },
+            { name: 'viewer' }
         ]),
         knex('ranks').insert([
-            { id: 1, name: 'генерал-полковник', value: 180 },
-            { id: 2, name: 'генерал-лейтенант', value: 170 },
-            { id: 3, name: 'генерал-майор', value: 160 },
-            { id: 4, name: 'полковник', value: 150 },
-            { id: 5, name: 'подполковник', value: 140 },
-            { id: 6, name: 'майор', value: 130 },
-            { id: 7, name: 'капитан', value: 120 },
-            { id: 8, name: 'старший лейтенант', value: 110 },
-            { id: 9, name: 'лейтенант', value: 100 },
-            { id: 10, name: 'младший лейтенант', value: 90 },
-            { id: 11, name: 'старший прапорщик', value: 80 },
-            { id: 12, name: 'прапорщик', value: 70 },
-            { id: 13, name: 'старшина', value: 60 },
-            { id: 14, name: 'старший сержант', value: 50 },
-            { id: 15, name: 'сержант', value: 40 },
-            { id: 16, name: 'младший сержант', value: 30 },
-            { id: 17, name: 'ефрейтор', value: 20 },
-            { id: 18, name: 'рядовой', value: 10 }
+            { name: 'генерал-полковник', value: 180 },
+            { name: 'генерал-лейтенант', value: 170 },
+            { name: 'генерал-майор', value: 160 },
+            { name: 'полковник', value: 150 },
+            { name: 'подполковник', value: 140 },
+            { name: 'майор', value: 130 },
+            { name: 'капитан', value: 120 },
+            { name: 'старший лейтенант', value: 110 },
+            { name: 'лейтенант', value: 100 },
+            { name: 'младший лейтенант', value: 90 },
+            { name: 'старший прапорщик', value: 80 },
+            { name: 'прапорщик', value: 70 },
+            { name: 'старшина', value: 60 },
+            { name: 'старший сержант', value: 50 },
+            { name: 'сержант', value: 40 },
+            { name: 'младший сержант', value: 30 },
+            { name: 'ефрейтор', value: 20 },
+            { name: 'рядовой', value: 10 }
         ]),
         knex('unit_types').insert([
-            { id: 1, name: 'воинская часть' },
-            { id: 2, name: 'бригада' },
-            { id: 3, name: 'батальон' },
-            { id: 4, name: 'рота' },
-            { id: 5, name: 'взвод' },
-            { id: 6, name: 'отделение' }
+            { name: 'воинская часть' },
+            { name: 'бригада' },
+            { name: 'батальон' },
+            { name: 'рота' },
+            { name: 'взвод' },
+            { name: 'отделение' }
         ])
     ]);
 
