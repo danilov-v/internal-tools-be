@@ -11,34 +11,34 @@ class Unit extends BaseModel {
     parent: Unit;
     children: Unit[];
 
+    static tableName = 'units';
+
     static relationMappings: RelationMappings = {
         type: {
-            relation: Model.HasOneRelation,
+            relation: Model.BelongsToOneRelation,
             modelClass: UnitType,
             join: {
-                from: 'units.type_id',
-                to: 'unit_types.id'
+                from: `${Unit.tableName}.type_id`,
+                to: `${UnitType.tableName}.id`
             }
         },
         parent: {
-            relation: Model.HasOneRelation,
+            relation: Model.BelongsToOneRelation,
             modelClass: Unit,
             join: {
-                from: 'units.parent_unit',
-                to: 'units.id'
+                from: `${Unit.tableName}.parent_unit`,
+                to: `${Unit.tableName}.id`
             }
         },
         children: {
             relation: Model.HasManyRelation,
             modelClass: Unit,
             join: {
-                from: 'units.id',
-                to: 'units.parent_unit'
+                from: `${Unit.tableName}.id`,
+                to: `${Unit.tableName}.parent_unit`
             }
         }
     };
-
-    static tableName = 'units';
 }
 
 export default Unit;
