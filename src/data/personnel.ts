@@ -5,35 +5,34 @@ import { Model, RelationMappings } from 'objection';
 
 class Personnel extends BaseModel {
     calledAt!: Date;
-    demobilizationAt?: Date | null;
-    comment?: string | null;
-
+    demobilizationAt?: Date;
+    comment?: string;
     unitId!: number;
     userId!: number;
 
-    unit!: Unit;
-    user!: User;
+    unit?: Unit;
+    user?: User;
+
+    static tableName = 'personnel';
 
     static relationMappings: RelationMappings = {
         unit: {
-            relation: Model.HasOneRelation,
+            relation: Model.BelongsToOneRelation,
             modelClass: Unit,
             join: {
-                from: 'personnel.unit_id',
-                to: 'units.id'
+                from: `${Personnel.tableName}.unit_id`,
+                to: `${Unit.tableName}.id`
             }
         },
         user: {
-            relation: Model.HasOneRelation,
+            relation: Model.BelongsToOneRelation,
             modelClass: User,
             join: {
-                from: 'personnel.user_id',
-                to: 'users.id'
+                from: `${Personnel.tableName}.user_id`,
+                to: `${User.tableName}.id`
             }
         }
     };
-
-    static tableName = 'personnel';
 }
 
 export default Personnel;
