@@ -4,13 +4,38 @@ import User from './user';
 import { Model, RelationMappings } from 'objection';
 
 class Auth extends BaseModel {
-    createdAt!: Date;
-
     login!: string;
     password!: string;
+    roleId!: number;
+    userId!: number;
+    createdBy!: number;
+    createdAt!: Date;
+    deletedBy?: number;
+    deletedAt?: Date;
 
-    role!: Role;
-    user!: User;
+    role?: Role;
+    user?: User;
+
+    static tableName = 'auth';
+
+    static relationMappings: RelationMappings = {
+        role: {
+            relation: Model.HasOneRelation,
+            modelClass: Role,
+            join: {
+                from: `${Auth.tableName}.role_id`,
+                to: `${Role.tableName}.id`
+            }
+        },
+        user: {
+            relation: Model.HasOneRelation,
+            modelClass: User,
+            join: {
+                from: `${Auth.tableName}.user_id`,
+                to: `${User.tableName}.id`
+            }
+        }
+    };
 
     $beforeInsert() {
         this.createdAt = new Date();
@@ -33,27 +58,6 @@ class Auth extends BaseModel {
                 return entities[0];
             });
     }
-
-    static relationMappings: RelationMappings = {
-        role: {
-            relation: Model.HasOneRelation,
-            modelClass: Role,
-            join: {
-                from: 'auth.role_id',
-                to: 'roles.id'
-            }
-        },
-        user: {
-            relation: Model.HasOneRelation,
-            modelClass: User,
-            join: {
-                from: 'auth.user_id',
-                to: 'users.id'
-            }
-        }
-    };
-
-    static tableName = 'auth';
 }
 
 export default Auth;
