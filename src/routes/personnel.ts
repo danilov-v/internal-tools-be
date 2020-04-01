@@ -1,7 +1,5 @@
 import express from 'express';
-import { ArgumentError } from 'ow';
 import { plainToClass } from 'class-transformer';
-import logger from '../common/logger';
 import Personnel from '../data/personnel';
 import User from '../data/user';
 import Unit from '../data/unit';
@@ -14,19 +12,7 @@ import {
 
 const personnelRouter = express.Router();
 
-function processError(err: Error, res: express.Response) {
-    if (err instanceof ArgumentError) {
-        logger.info(`Validation failed: ${err}`);
-        res.status(400);
-        return res.json({ message: err.message });
-    }
-
-    logger.error(err);
-    res.status(500);
-    res.json({ message: 'Internal server error' });
-}
-
-personnelRouter.get('/personnel', async function (req, res) {
+personnelRouter.get('/personnel', async function (req, res, next) {
     try {
         validateGetPersonnelRequest(req);
         const unitId = Number(req.query.unitId);
@@ -46,11 +32,11 @@ personnelRouter.get('/personnel', async function (req, res) {
 
         res.json(personnel.map(x => new PersonnelInfoDto(x)));
     } catch (err) {
-        processError(err, res);
+        next(err);
     }
 });
 
-personnelRouter.get('/personnel/:personnelId', async function (req, res) {
+personnelRouter.get('/personnel/:personnelId', async function (req, res, next) {
     try {
         validateGetPersonnelByIdRequest(req);
         const personnelId = Number(req.params.personnelId);
@@ -66,11 +52,11 @@ personnelRouter.get('/personnel/:personnelId', async function (req, res) {
 
         res.json(new PersonnelDetailsDto(personnel.user, personnel));
     } catch (err) {
-        processError(err, res);
+        next(err);
     }
 });
 
-personnelRouter.post('/personnel', async function (req, res) {
+personnelRouter.post('/personnel', async function (req, res, next) {
     try {
         validateCreatePersonnelRequest(req);
         const dto = plainToClass(CreatePersonnelDto, req.body);
@@ -84,7 +70,7 @@ personnelRouter.post('/personnel', async function (req, res) {
 
         res.json(result);
     } catch (err) {
-        processError(err, res);
+        next(err);
     }
 });
 
