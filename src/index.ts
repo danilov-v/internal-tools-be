@@ -18,6 +18,7 @@ import authService from './business/auth.service';
 import personnelRouter from './routes/personnel';
 import rankRouter from './routes/rank';
 import unitRouter from './routes/unit';
+import profileRouter from './routes/profile';
 
 // Passport
 passport.use(new CustomStrategy.Strategy(async function (req, done) {
@@ -98,6 +99,7 @@ app.get('/', function (req, res) {
 app.use(authRouter);
 app.use(personnelRouter);
 app.use(rankRouter);
+app.use(profileRouter);
 app.use('/unit', unitRouter);
 
 knex.migrate.latest().then((res) => {
