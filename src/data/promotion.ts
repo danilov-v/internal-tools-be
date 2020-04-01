@@ -12,8 +12,8 @@ class Promotion extends BaseModel {
     closedAt?: Date;
     closedBy?: number;
 
-    type!: PromotionType;
-    personnel!: Personnel;
+    type?: PromotionType;
+    personnel?: Personnel;
 
     static tableName = 'promotions';
 

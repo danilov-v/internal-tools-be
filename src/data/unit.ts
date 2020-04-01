@@ -4,12 +4,12 @@ import { Model, RelationMappings } from 'objection';
 
 class Unit extends BaseModel {
     name!: string;
-    typeId: number;
+    typeId!: number;
     parentUnit?: number;
 
-    type!: UnitType;
-    parent: Unit;
-    children: Unit[];
+    type?: UnitType;
+    parent?: Unit;
+    children?: Unit[];
 
     static tableName = 'units';
 

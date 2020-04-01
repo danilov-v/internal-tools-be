@@ -15,7 +15,7 @@ class User extends BaseModel {
     updatedAt?: Date;
     updatedBy?: number;
 
-    rank!: Rank;
+    rank?: Rank;
 
     static tableName = 'users';
 

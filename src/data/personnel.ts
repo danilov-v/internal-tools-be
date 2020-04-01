@@ -10,8 +10,8 @@ class Personnel extends BaseModel {
     unitId!: number;
     userId!: number;
 
-    unit!: Unit;
-    user!: User;
+    unit?: Unit;
+    user?: User;
 
     static tableName = 'personnel';
 

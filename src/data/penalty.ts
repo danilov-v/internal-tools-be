@@ -14,12 +14,8 @@ class Penalty extends BaseModel {
     closedAt?: Date;
     closedBy?: number;
 
-    type!: PenaltyType;
-    personnel!: Personnel;
-
-    $beforeInsert() {
-        this.createdAt = new Date();
-    }
+    type?: PenaltyType;
+    personnel?: Personnel;
 
     static tableName = 'penalties';
 
@@ -57,6 +53,10 @@ class Penalty extends BaseModel {
             }
         }
     };
+
+    $beforeInsert() {
+        this.createdAt = new Date();
+    }
 }
 
 export default Penalty;

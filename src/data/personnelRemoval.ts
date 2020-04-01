@@ -9,10 +9,10 @@ class PersonnelRemoval extends BaseModel {
     personnelId!: number;
     createdAt!: Date;
     createdBy!: number;
-    comment: string;
+    comment?: string;
 
-    type: PersonnelRemovalType;
-    personnel!: Personnel;
+    type?: PersonnelRemovalType;
+    personnel?: Personnel;
 
     static tableName = 'personnel_removal';
 

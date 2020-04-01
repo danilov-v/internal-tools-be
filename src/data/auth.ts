@@ -14,7 +14,7 @@ class Auth extends BaseModel {
     deletedAt?: Date;
 
     role?: Role;
-    user: User;
+    user?: User;
 
     static tableName = 'auth';
 
