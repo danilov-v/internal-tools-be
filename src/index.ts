@@ -18,6 +18,7 @@ import authService from './business/auth.service';
 import personnelRouter from './routes/personnel';
 import rankRouter from './routes/rank';
 import unitRouter from './routes/unit';
+import errorHandler from './express-middleware/error.handler';
 import profileRouter from './routes/profile';
 
 // Passport
@@ -101,6 +102,8 @@ app.use(personnelRouter);
 app.use(rankRouter);
 app.use(profileRouter);
 app.use('/unit', unitRouter);
+
+app.use(errorHandler());
 
 knex.migrate.latest().then((res) => {
     if (res[1].length > 0) {
