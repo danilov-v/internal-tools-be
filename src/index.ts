@@ -19,6 +19,7 @@ import personnelRouter from './routes/personnel';
 import rankRouter from './routes/rank';
 import unitRouter from './routes/unit';
 import errorHandler from './express-middleware/error.handler';
+import profileRouter from './routes/profile';
 
 // Passport
 passport.use(new CustomStrategy.Strategy(async function (req, done) {
@@ -99,6 +100,7 @@ app.get('/', function (req, res) {
 app.use(authRouter);
 app.use(personnelRouter);
 app.use(rankRouter);
+app.use(profileRouter);
 app.use('/unit', unitRouter);
 
 app.use(errorHandler());
