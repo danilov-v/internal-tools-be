@@ -15,7 +15,7 @@ function errorHandler(): ErrorRequestHandler {
         logger.error(err);
         for (const error of errors) {
             if (err instanceof error.class) {
-                res.status(error.status).send(error.message(err));
+                res.status(error.status).send({ message: error.message(err) });
                 break;
             }
         }

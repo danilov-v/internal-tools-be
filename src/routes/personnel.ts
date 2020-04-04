@@ -1,5 +1,5 @@
 import express from 'express';
-import { plainToClass } from 'class-transformer';
+import { plainToClass, plainToClassFromExist } from 'class-transformer';
 import Personnel from '../data/personnel';
 import User from '../data/user';
 import Unit from '../data/unit';
@@ -9,6 +9,9 @@ import {
     validateGetPersonnelByIdRequest,
     validateGetPersonnelRequest
 } from './request-validators';
+import personnelService from '../business/personnel.service';
+import UpdatePersonnelDto from './dtos/updatePersonnelDto';
+import { validateUpdatePersonnelRequest } from './request-validators/personnel';
 
 const personnelRouter = express.Router();
 
@@ -51,6 +54,20 @@ personnelRouter.get('/personnel/:personnelId', async function (req, res, next) {
         }
 
         res.json(new PersonnelDetailsDto(personnel.user, personnel));
+    } catch (err) {
+        next(err);
+    }
+});
+
+personnelRouter.put('/personnel/:personnelId', async (req, res, next) => {
+    try {
+        validateUpdatePersonnelRequest(req);
+        const dto = plainToClassFromExist(new UpdatePersonnelDto(), req.body, { excludeExtraneousValues: true });
+        dto.updatedBy = (req.user as User).id;
+        dto.personnelId = Number.parseInt(req.params.personnelId);
+        await personnelService.updatePersonnel(dto);
+
+        res.send();
     } catch (err) {
         next(err);
     }
