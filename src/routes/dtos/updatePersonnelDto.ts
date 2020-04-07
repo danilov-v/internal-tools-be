@@ -1,7 +1,7 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import { dateTransformer, optionalDateTransformer } from '../../utils/transformers';
 
-class UpdatePersonnelDto {
+export class UpdatePersonnelDto {
 
     @Expose()
     personnelId: number = null;
@@ -48,5 +48,3 @@ class UpdatePersonnelDto {
     @Type(() => Number)
     updatedBy: number = null;
 }
-
-export default UpdatePersonnelDto;

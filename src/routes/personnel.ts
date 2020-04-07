@@ -3,16 +3,21 @@ import { plainToClass, plainToClassFromExist } from 'class-transformer';
 import Personnel from '../data/personnel';
 import User from '../data/user';
 import Unit from '../data/unit';
-import { CreatePersonnelDto, PersonnelDetailsDto, PersonnelInfoDto, PersonnelRemovalDto } from './dtos';
+import {
+    CreatePersonnelDto,
+    PersonnelDetailsDto,
+    PersonnelInfoDto,
+    PersonnelRemovalDto,
+    UpdatePersonnelDto
+} from './dtos';
 import {
     validateCreatePersonnelRequest,
     validateGetPersonnelByIdRequest,
-    validateGetPersonnelRequest
+    validateGetPersonnelRequest,
+    validatePersonnelRemovalRequest,
+    validateUpdatePersonnelRequest
 } from './request-validators';
-import { validatePersonnelRemovalRequest } from './request-validators/personnel';
 import personnelService from '../business/personnel.service';
-import UpdatePersonnelDto from './dtos/updatePersonnelDto';
-import { validateUpdatePersonnelRequest } from './request-validators/personnel';
 
 const personnelRouter = express.Router();
 

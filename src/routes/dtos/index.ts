@@ -4,6 +4,7 @@ import { PersonnelDetailsDto } from './personnelDetailsDto';
 import { PersonnelInfoDto } from './personnelInfoDto';
 import { RankInfoDto } from './rankInfoDto';
 import { PersonnelRemovalDto } from './personnelRemovalDto';
+import { UpdatePersonnelDto } from './updatePersonnelDto';
 
 export {
     CreatePersonnelDto,
@@ -11,5 +12,6 @@ export {
     PersonnelDetailsDto,
     PersonnelInfoDto,
     RankInfoDto,
-    PersonnelRemovalDto
+    PersonnelRemovalDto,
+    UpdatePersonnelDto
 };
