@@ -28,8 +28,14 @@ function validateGetPersonnelByIdRequest(req) {
     ow(personnelId, 'personnelId', ow.any(ow.number.integer, ow.string.numeric));
 }
 
+const validateUpdatePersonnelRequest = (req) => {
+    validateCreatePersonnelRequest(req);
+    validateGetPersonnelByIdRequest(req);
+};
+
 export {
     validateCreatePersonnelRequest,
     validateGetPersonnelRequest,
-    validateGetPersonnelByIdRequest
+    validateGetPersonnelByIdRequest,
+    validateUpdatePersonnelRequest
 };
