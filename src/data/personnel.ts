@@ -3,12 +3,25 @@ import User from './user';
 import Unit from './unit';
 import { Model, RelationMappings } from 'objection';
 import PersonnelRemoval from './personnelRemoval';
+import { Exclude, Expose } from 'class-transformer';
 
+@Exclude()
 class Personnel extends BaseModel {
+    public static readonly GROUP_NAME = 'personnel';
+
+    @Expose({ groups: [ Personnel.GROUP_NAME ] })
     calledAt!: Date;
+
+    @Expose({ groups: [ Personnel.GROUP_NAME ] })
     demobilizationAt?: Date;
+
+    @Expose({ groups: [ Personnel.GROUP_NAME ] })
     comment?: string;
+
+    @Expose({ groups: [ Personnel.GROUP_NAME ] })
     unitId!: number;
+
+    @Expose({ groups: [ Personnel.GROUP_NAME ] })
     userId!: number;
     deletedAt?: Date;
 

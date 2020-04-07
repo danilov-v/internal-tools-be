@@ -34,9 +34,15 @@ const validatePersonnelRemovalRequest = ({ body }) => {
     ow(body.comment, 'comment', ow.any(ow.nullOrUndefined, ow.string.nonEmpty));
 };
 
+const validateUpdatePersonnelRequest = (req) => {
+    validateCreatePersonnelRequest(req);
+    validateGetPersonnelByIdRequest(req);
+};
+
 export {
     validateCreatePersonnelRequest,
     validateGetPersonnelRequest,
+    validatePersonnelRemovalRequest,
     validateGetPersonnelByIdRequest,
-    validatePersonnelRemovalRequest
+    validateUpdatePersonnelRequest
 };
