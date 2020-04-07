@@ -10,7 +10,7 @@ class Personnel extends BaseModel {
     comment?: string;
     unitId!: number;
     userId!: number;
-    deletedAt!: Date;
+    deletedAt?: Date;
 
     unit?: Unit;
     user?: User;
