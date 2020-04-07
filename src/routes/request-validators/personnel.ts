@@ -9,8 +9,8 @@ function validateCreatePersonnelRequest(req) {
     ow(body.middleName, 'middleName', ow.any(ow.nullOrUndefined, ow.string.nonEmpty));
     ow(body.phone, 'phone', ow.string.matches(/^\+\d{3,12}$/));
     ow(body.position, 'position', ow.string.nonEmpty);
-    ow(body.unitId, 'unitId', ow.string.numeric);
-    ow(body.rankId, 'rankId', ow.string.numeric);
+    ow(body.unitId, 'unitId', ow.any(ow.number.integer, ow.string.numeric));
+    ow(body.rankId, 'rankId', ow.any(ow.number.integer, ow.string.numeric));
     ow(body.calledAt, 'calledAt', ow.string.validate(isDateString));
     ow(body.birthday, 'birthday', ow.string.validate(isDateString));
     ow(body.demobilizationAt, 'demobilizationAt', ow.any(ow.nullOrUndefined, ow.string.validate(isDateString)));
@@ -19,18 +19,18 @@ function validateCreatePersonnelRequest(req) {
 function validateGetPersonnelRequest(req) {
     const unitId = req.query.unitId;
 
-    ow(unitId, 'unitId', ow.string.numeric);
+    ow(unitId, 'unitId', ow.any(ow.number.integer, ow.string.numeric));
 }
 
 function validateGetPersonnelByIdRequest(req) {
     const personnelId = req.params.personnelId;
 
-    ow(personnelId, 'personnelId', ow.string.numeric);
+    ow(personnelId, 'personnelId', ow.any(ow.number.integer, ow.string.numeric));
 }
 
 const validatePersonnelRemovalRequest = ({ body }) => {
-    ow(body.personnelId, 'personnelId', ow.string.numeric);
-    ow(body.typeId, 'typeId', ow.string.numeric);
+    ow(body.personnelId, 'personnelId', ow.any(ow.number.integer, ow.string.numeric));
+    ow(body.typeId, 'typeId', ow.any(ow.number.integer, ow.string.numeric));
     ow(body.comment, 'comment', ow.any(ow.nullOrUndefined, ow.string.nonEmpty));
 };
 
