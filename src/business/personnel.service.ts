@@ -1,9 +1,8 @@
-import UpdatePersonnelDto from '../routes/dtos/updatePersonnelDto';
 import Personnel from '../data/personnel';
 import { plainToClass } from 'class-transformer';
 import User from '../data/user';
 import { Model } from 'objection';
-import { PersonnelRemovalDto } from '../routes/dtos';
+import { PersonnelRemovalDto, UpdatePersonnelDto } from '../routes/dtos';
 import PersonnelRemoval from '../data/personnelRemoval';
 import PersonnelRemovalType from '../data/personnelRemovalType';
 
