@@ -18,7 +18,7 @@ class Auth extends BaseModel {
 
     static tableName = 'auth';
 
-    static relationMappings: RelationMappings = {
+    static relationMappings = (): RelationMappings => ({
         role: {
             relation: Model.HasOneRelation,
             modelClass: Role,
@@ -35,7 +35,7 @@ class Auth extends BaseModel {
                 to: `${User.tableName}.id`
             }
         }
-    };
+    });
 
     $beforeInsert() {
         this.createdAt = new Date();

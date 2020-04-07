@@ -44,7 +44,7 @@ class User extends BaseModel {
 
     static tableName = 'users';
 
-    static relationMappings: RelationMappings = {
+    static relationMappings = (): RelationMappings => ({
         rank: {
             modelClass: Rank,
             relation: Model.BelongsToOneRelation,
@@ -53,7 +53,7 @@ class User extends BaseModel {
                 to: `${Rank.tableName}.id`
             }
         }
-    };
+    });
 
     $beforeInsert() {
         this.createdAt = new Date();

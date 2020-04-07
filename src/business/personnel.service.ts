@@ -3,6 +3,9 @@ import Personnel from '../data/personnel';
 import { plainToClass } from 'class-transformer';
 import User from '../data/user';
 import { Model } from 'objection';
+import { PersonnelRemovalDto } from '../routes/dtos';
+import PersonnelRemoval from '../data/personnelRemoval';
+import PersonnelRemovalType from '../data/personnelRemovalType';
 
 const personnelService = {
 
@@ -16,6 +19,20 @@ const personnelService = {
             await Personnel.query(trx).update(personnelDto).where({ id: personnelDto.id });
             await User.query(trx).update(userDto).where({ id: userDto.id });
         });
+    },
+
+    async removePersonnel(dto: PersonnelRemovalDto): Promise<void> {
+        const personnel = await Personnel.query().findById(dto.personnelId);
+        if (personnel.deletedAt === null) {
+            await Model.transaction(async (trx) => {
+                await PersonnelRemoval.query(trx).insert(plainToClass(PersonnelRemoval, dto));
+                await Personnel.query(trx).findById(dto.personnelId).update({ deletedAt: new Date() });
+            });
+        }
+    },
+
+    async getRemovalTypes(): Promise<PersonnelRemovalType[]> {
+        return PersonnelRemovalType.query();
     }
 };
 

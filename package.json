@@ -12,6 +12,7 @@
         "migrate:make": "knex migrate:make",
         "migrate:status": "knex migrate:status",
         "seed:initial": "knex seed:run --specific=initial_data.js",
+        "seed:removal": "knex seed:run --specific=personnel_removal_types.js",
         "seed:make": "knex seed:make",
         "start": "nodemon -w src -e ts -x ts-node src/index.ts",
         "test": "jest"

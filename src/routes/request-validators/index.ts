@@ -1,10 +1,15 @@
 import {
     validateCreatePersonnelRequest,
     validateGetPersonnelRequest,
-    validateGetPersonnelByIdRequest } from './personnel';
+    validateGetPersonnelByIdRequest,
+    validateUpdatePersonnelRequest,
+    validatePersonnelRemovalRequest
+} from './personnel';
 
 export {
     validateCreatePersonnelRequest,
     validateGetPersonnelRequest,
-    validateGetPersonnelByIdRequest
+    validateGetPersonnelByIdRequest,
+    validateUpdatePersonnelRequest,
+    validatePersonnelRemovalRequest
 };

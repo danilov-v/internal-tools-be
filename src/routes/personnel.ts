@@ -3,15 +3,21 @@ import { plainToClass, plainToClassFromExist } from 'class-transformer';
 import Personnel from '../data/personnel';
 import User from '../data/user';
 import Unit from '../data/unit';
-import { CreatePersonnelDto, PersonnelDetailsDto, PersonnelInfoDto } from './dtos';
+import {
+    CreatePersonnelDto,
+    PersonnelDetailsDto,
+    PersonnelInfoDto,
+    PersonnelRemovalDto,
+    UpdatePersonnelDto
+} from './dtos';
 import {
     validateCreatePersonnelRequest,
     validateGetPersonnelByIdRequest,
-    validateGetPersonnelRequest
+    validateGetPersonnelRequest,
+    validatePersonnelRemovalRequest,
+    validateUpdatePersonnelRequest
 } from './request-validators';
 import personnelService from '../business/personnel.service';
-import UpdatePersonnelDto from './dtos/updatePersonnelDto';
-import { validateUpdatePersonnelRequest } from './request-validators/personnel';
 
 const personnelRouter = express.Router();
 
@@ -31,9 +37,18 @@ personnelRouter.get('/personnel', async function (req, res, next) {
         const personnel = await Personnel.query()
             .withGraphJoined('user')
             .withGraphJoined('unit')
+            .whereNull('deleted_at')
             .whereIn('unit_id', childUnitIds);
 
         res.json(personnel.map(x => new PersonnelInfoDto(x)));
+    } catch (err) {
+        next(err);
+    }
+});
+
+personnelRouter.get('/personnel/removal-types', async (req, res, next) => {
+    try {
+        res.json(await personnelService.getRemovalTypes());
     } catch (err) {
         next(err);
     }
@@ -86,6 +101,19 @@ personnelRouter.post('/personnel', async function (req, res, next) {
         });
 
         res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
+personnelRouter.delete('/personnel', async (req, res, next) => {
+    try {
+        validatePersonnelRemovalRequest(req);
+        const personnelRemovalDto = plainToClassFromExist(new PersonnelRemovalDto(), req.body, { excludeExtraneousValues: true });
+        personnelRemovalDto.createdBy = (req.user as User).id;
+        await personnelService.removePersonnel(personnelRemovalDto);
+
+        res.send();
     } catch (err) {
         next(err);
     }

@@ -13,7 +13,7 @@ class Unit extends BaseModel {
 
     static tableName = 'units';
 
-    static relationMappings: RelationMappings = {
+    static relationMappings = (): RelationMappings => ({
         type: {
             relation: Model.BelongsToOneRelation,
             modelClass: UnitType,
@@ -38,7 +38,7 @@ class Unit extends BaseModel {
                 to: `${Unit.tableName}.parent_unit`
             }
         }
-    };
+    });
 }
 
 export default Unit;

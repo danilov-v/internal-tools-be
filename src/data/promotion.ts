@@ -17,7 +17,7 @@ class Promotion extends BaseModel {
 
     static tableName = 'promotions';
 
-    static relationMappings: RelationMappings = {
+    static relationMappings = (): RelationMappings => ({
         personnel: {
             modelClass: Personnel,
             relation: Model.BelongsToOneRelation,
@@ -34,7 +34,7 @@ class Promotion extends BaseModel {
                 to: `${PromotionType.tableName}.id`
             }
         }
-    };
+    });
 
     $beforeInsert() {
         this.createdAt = new Date();
