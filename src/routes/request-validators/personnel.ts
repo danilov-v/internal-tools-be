@@ -28,8 +28,15 @@ function validateGetPersonnelByIdRequest(req) {
     ow(personnelId, 'personnelId', ow.any(ow.number.integer, ow.string.numeric));
 }
 
+const validatePersonnelRemovalRequest = ({ body }) => {
+    ow(body.personnelId, 'personnelId', ow.any(ow.number.integer, ow.string.numeric));
+    ow(body.typeId, 'typeId', ow.any(ow.number.integer, ow.string.numeric));
+    ow(body.comment, 'comment', ow.any(ow.nullOrUndefined, ow.string.nonEmpty));
+};
+
 export {
     validateCreatePersonnelRequest,
     validateGetPersonnelRequest,
-    validateGetPersonnelByIdRequest
+    validateGetPersonnelByIdRequest,
+    validatePersonnelRemovalRequest
 };
