@@ -16,10 +16,10 @@ class PersonnelRemoval extends BaseModel {
 
     static tableName = 'personnel_removal';
 
-    static relationMappings: RelationMappings = {
+    static relationMappings = (): RelationMappings => ({
         personnel: {
             modelClass: Personnel,
-            relation: Model.BelongsToOneRelation,
+            relation: Model.HasOneRelation,
             join: {
                 from: `${PersonnelRemoval.tableName}.personnel_id`,
                 to: `${Personnel.tableName}.id`
@@ -33,7 +33,7 @@ class PersonnelRemoval extends BaseModel {
                 to: `${PersonnelRemovalType.tableName}.id`
             }
         }
-    }
+    });
 
     $beforeInsert() {
         this.createdAt = new Date();

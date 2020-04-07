@@ -2,6 +2,7 @@ import BaseModel from './base.model';
 import User from './user';
 import Unit from './unit';
 import { Model, RelationMappings } from 'objection';
+import PersonnelRemoval from './personnelRemoval';
 
 class Personnel extends BaseModel {
     calledAt!: Date;
@@ -9,13 +10,15 @@ class Personnel extends BaseModel {
     comment?: string;
     unitId!: number;
     userId!: number;
+    deletedAt!: Date;
 
     unit?: Unit;
     user?: User;
+    personnelRemoval?: PersonnelRemoval;
 
     static tableName = 'personnel';
 
-    static relationMappings: RelationMappings = {
+    static relationMappings = (): RelationMappings => ({
         unit: {
             relation: Model.BelongsToOneRelation,
             modelClass: Unit,
@@ -31,8 +34,16 @@ class Personnel extends BaseModel {
                 from: `${Personnel.tableName}.user_id`,
                 to: `${User.tableName}.id`
             }
+        },
+        personnelRemoval: {
+            relation: Model.BelongsToOneRelation,
+            modelClass: PersonnelRemoval,
+            join: {
+                from: `${PersonnelRemoval.tableName}.personnel_id`,
+                to: `${Personnel.tableName}.id`
+            }
         }
-    };
+    });
 }
 
 export default Personnel;

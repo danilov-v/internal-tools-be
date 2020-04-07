@@ -19,7 +19,7 @@ class Penalty extends BaseModel {
 
     static tableName = 'penalties';
 
-    static relationMappings: RelationMappings = {
+    static relationMappings = (): RelationMappings => ({
         createdBy: {
             relation: Model.BelongsToOneRelation,
             modelClass: Auth,
@@ -52,7 +52,7 @@ class Penalty extends BaseModel {
                 to: `${Personnel.tableName}.id`
             }
         }
-    };
+    });
 
     $beforeInsert() {
         this.createdAt = new Date();
