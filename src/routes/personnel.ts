@@ -1,11 +1,7 @@
 import express from 'express';
-import { plainToClass, plainToClassFromExist } from 'class-transformer';
-import Personnel from '../data/personnel';
-import User from '../data/user';
-import Unit from '../data/unit';
+import { plainToClassFromExist } from 'class-transformer';
 import {
     CreatePersonnelDto,
-    PersonnelDetailsDto,
     PersonnelInfoDto,
     PersonnelRemovalDto,
     UpdatePersonnelDto
@@ -21,24 +17,10 @@ import personnelService from '../business/personnel.service';
 
 const personnelRouter = express.Router();
 
-personnelRouter.get('/personnel', async function (req, res, next) {
+personnelRouter.get('', async (req, res, next) => {
     try {
         validateGetPersonnelRequest(req);
-        const unitId = Number(req.query.unitId);
-
-        const units = await Unit.query()
-            .withGraphFetched('children.^')
-            .where('id', unitId);
-
-        const extractIds = (units: Unit[]): number[] => units.flatMap(unit => [ unit.id, ...extractIds(unit.children) ]);
-
-        const childUnitIds = extractIds(units);
-
-        const personnel = await Personnel.query()
-            .withGraphJoined('user')
-            .withGraphJoined('unit')
-            .whereNull('deleted_at')
-            .whereIn('unit_id', childUnitIds);
+        const personnel = await personnelService.getPersonnelByUnitId(Number(req.query.unitId));
 
         res.json(personnel.map(x => new PersonnelInfoDto(x)));
     } catch (err) {
@@ -46,39 +28,28 @@ personnelRouter.get('/personnel', async function (req, res, next) {
     }
 });
 
-personnelRouter.get('/personnel/removal-types', async (req, res, next) => {
-    try {
-        res.json(await personnelService.getRemovalTypes());
-    } catch (err) {
-        next(err);
-    }
-});
-
-personnelRouter.get('/personnel/:personnelId', async function (req, res, next) {
+personnelRouter.get('/:personnelId(\\d+)', async (req, res, next) => {
     try {
         validateGetPersonnelByIdRequest(req);
         const personnelId = Number(req.params.personnelId);
+        const personnelDetailsDto = await personnelService.getPersonnelById(personnelId);
 
-        const personnel = await Personnel.query()
-            .withGraphJoined('user')
-            .findById(personnelId);
-
-        if (!personnel) {
+        if (!personnelDetailsDto) {
             res.status(404);
             return res.json({ message: `Personnel with id ${personnelId} not found` });
         }
 
-        res.json(new PersonnelDetailsDto(personnel.user, personnel));
+        res.json(personnelDetailsDto);
     } catch (err) {
         next(err);
     }
 });
 
-personnelRouter.put('/personnel/:personnelId', async (req, res, next) => {
+personnelRouter.put('/:personnelId(\\d+)', async (req, res, next) => {
     try {
         validateUpdatePersonnelRequest(req);
         const dto = plainToClassFromExist(new UpdatePersonnelDto(), req.body, { excludeExtraneousValues: true });
-        dto.updatedBy = (req.user as User).id;
+        dto.updatedBy = (req.user as { id: number }).id;
         dto.personnelId = Number.parseInt(req.params.personnelId);
         await personnelService.updatePersonnel(dto);
 
@@ -88,32 +59,33 @@ personnelRouter.put('/personnel/:personnelId', async (req, res, next) => {
     }
 });
 
-personnelRouter.post('/personnel', async function (req, res, next) {
+personnelRouter.post('', async (req, res, next) => {
     try {
         validateCreatePersonnelRequest(req);
-        const dto = plainToClass(CreatePersonnelDto, req.body);
-
-        const result = await Personnel.transaction(async function (trx) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const user = await User.query(trx).insert(dto.getUser((req.user as any).id));
-            const personnel = await Personnel.query(trx).insert(dto.getPersonnel(user.id));
-            return new PersonnelDetailsDto(user, personnel);
-        });
-
-        res.json(result);
+        const dto = plainToClassFromExist(new CreatePersonnelDto(), req.body, { excludeExtraneousValues: true });
+        dto.createdBy = (req.user as { id: number }).id;
+        res.json(await personnelService.createPersonnel(dto));
     } catch (err) {
         next(err);
     }
 });
 
-personnelRouter.delete('/personnel', async (req, res, next) => {
+personnelRouter.delete('', async (req, res, next) => {
     try {
         validatePersonnelRemovalRequest(req);
         const personnelRemovalDto = plainToClassFromExist(new PersonnelRemovalDto(), req.body, { excludeExtraneousValues: true });
-        personnelRemovalDto.createdBy = (req.user as User).id;
+        personnelRemovalDto.createdBy = (req.user as { id: number }).id;
         await personnelService.removePersonnel(personnelRemovalDto);
 
         res.send();
+    } catch (err) {
+        next(err);
+    }
+});
+
+personnelRouter.get('/removal-types', async (req, res, next) => {
+    try {
+        res.json(await personnelService.getRemovalTypes());
     } catch (err) {
         next(err);
     }

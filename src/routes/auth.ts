@@ -1,9 +1,10 @@
 import express from 'express';
 import passport from 'passport';
+
 const authRouter = express.Router();
 
-authRouter.post('/login', function (req, res, next) {
-    passport.authenticate('custom', function (err, user) {
+authRouter.post('/login', (req, res, next) => {
+    passport.authenticate('custom', (err, user) => {
         if (err) {
             return next(err);
         }
@@ -13,17 +14,15 @@ authRouter.post('/login', function (req, res, next) {
             return res.json({ message: 'Invalid credentials' });
         }
 
-        req.login(user, function (err) {
-            if (err) {
-                return next(err);
-            }
-
-            res.json(user);
-        });
+        req.login(user, err => err ? next(err) : res.json(user));
     })(req, res, next);
 });
 
-authRouter.post('/logout', function (req, res) {
+authRouter.get('/profile', async (req, res) => {
+    res.json(req.user);
+});
+
+authRouter.post('/logout', (req, res) => {
     req.logOut();
     res.status(200);
     res.json({ message: 'Success' });
