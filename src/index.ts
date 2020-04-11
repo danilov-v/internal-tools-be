@@ -19,11 +19,10 @@ import personnelRouter from './routes/personnel';
 import rankRouter from './routes/rank';
 import unitRouter from './routes/unit';
 import errorHandler from './express-middleware/error.handler';
-import profileRouter from './routes/profile';
 import unitTypeRouter from './routes/unitType';
 
 // Passport
-passport.use(new CustomStrategy.Strategy(async function (req, done) {
+passport.use(new CustomStrategy.Strategy(async (req, done) => {
     const login = req.body.login.toString();
     const password = req.body.password.toString();
 
@@ -43,12 +42,12 @@ passport.use(new CustomStrategy.Strategy(async function (req, done) {
     });
 }));
 
-passport.serializeUser(function (req, user, done) {
+passport.serializeUser((req, user, done) => {
     req.session.user = user;
     done(null, user);
 });
 
-passport.deserializeUser(function (req, user, done) {
+passport.deserializeUser((req, user, done) => {
     done(null, user);
 });
 
@@ -64,9 +63,7 @@ const knex = Knex({
     }
 });
 if (config.logQueries) {
-    knex.on('query', function (query) {
-        logger.debug(query.sql);
-    });
+    knex.on('query', query => logger.debug(query.sql));
 }
 Model.knex(knex);
 
@@ -94,14 +91,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(authenticateRoutesExcept([ '/login' ]));
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
     res.json({ message: 'Hello World!' });
 });
 
 app.use(authRouter);
-app.use(personnelRouter);
-app.use(rankRouter);
-app.use(profileRouter);
+app.use('/personnel', personnelRouter);
+app.use('/rank', rankRouter);
 app.use('/unit', unitRouter);
 app.use('/unit-type', unitTypeRouter);
 
